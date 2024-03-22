@@ -1,15 +1,12 @@
 #pragma once
 #include "Helpers/Includes.h"
 #include "Renderer/GraphicsContext.h"
-#include "Renderer/Renderer.h"
+#include "Context/OpenGL/OpenGLContext.h"
 
 class Window {
     public:
         Window(std::string name, uint16_t w, uint16_t h);
         void Render();
-
-        // Set the graphics context of the window (must be called for anything to render)
-
 
         // Getters
         inline GLFWwindow* GetNativeWindow() const {return m_window;}
@@ -20,7 +17,7 @@ class Window {
 
     private:
         GLFWwindow* m_window = nullptr;
-        GraphicsContext* m_renderer;
+        GraphicsContext* m_context;
 
         uint16_t m_width = 600;
         uint16_t m_height = 800;

@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "Renderer/Renderer.h"
 
 Window::Window(std::string name, uint16_t w, uint16_t h) : m_width(w), m_height(h), m_name(name) 
 {
