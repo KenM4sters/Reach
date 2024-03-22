@@ -1,0 +1,26 @@
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/usr/local/macOS/include/**",
+                "/Users/samuelbrookman/Desktop/Engines/Reach/vendor/glm/**",
+                "/Users/samuelbrookman/Desktop/Engines/Reach/vendor/GLFW/**",
+                "/Users/samuelbrookman/Desktop/Engines/Reach/vendor/glad/**",
+                "/Users/samuelbrookman/Desktop/Engines/Reach/vendor/assimp/**",
+                "/Users/samuelbrookman/Desktop/Engines/Reach/vendor/ImGui/**",
+                "/Users/samuelbrookman/Desktop/Engines/Reach/vendor/KHR/**"
+            ],
+            "defines": [],
+            "macFrameworkPath": [
+                "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"
+            ],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "macos-clang-arm64"
+        }
+    ],
+    "version": 4
+}
