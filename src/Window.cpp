@@ -46,14 +46,13 @@ Window::Window(std::string name, uint16_t w, uint16_t h)
     glfwMakeContextCurrent(m_window);
     //  glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-
     m_context = new OpenGLContext(this); // OpenGL for now.
     m_context->Init();
 
 }
 
-void Window::Render() 
+void Window::Update() 
 {
-    
+    std::cout << "Rendering" << std::endl;   
 }
 

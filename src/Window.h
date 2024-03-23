@@ -2,6 +2,11 @@
 #include "Helpers/Includes.h"
 #include "Renderer/GraphicsContext.h"
 
+/**
+ * The Window class is resonsible for handling everything to do with our window, from simply
+ * setting it up (using GLFW), creating a graphics context and handling user input.
+*/
+
 struct WindowProps {
     uint16_t Width = 600;
     uint16_t Height = 800;
@@ -17,7 +22,7 @@ struct WindowProps {
 class Window {
     public:
         Window(std::string name, uint16_t w, uint16_t h);
-        void Render();
+        void Update();
 
         // Getters
         inline GLFWwindow* GetNativeWindow() const {return m_window;}
