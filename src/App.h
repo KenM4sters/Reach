@@ -17,6 +17,9 @@ class App {
             m_layerStack = std::make_unique<LayerStack>();
         }
         void Run(); 
+
+        void PushLayer(Layer* layer);
+        void PushOverlay(Layer* layer);
         inline static App& GetInstance() {return *s_instance;}
     private:
         std::shared_ptr<Window> m_window;

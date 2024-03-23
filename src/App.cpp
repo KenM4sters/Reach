@@ -12,3 +12,12 @@ void App::Run()
         }
     }
 }
+
+void App::PushLayer(Layer* layer) 
+{
+    m_layerStack->PushLayer(layer);
+}
+void App::PushOverlay(Layer* layer) 
+{
+    m_layerStack->PushOverlay(layer);
+}
