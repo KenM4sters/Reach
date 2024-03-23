@@ -1,7 +1,18 @@
 #pragma once
 #include "Helpers/Includes.h"
 #include "Renderer/GraphicsContext.h"
-#include "Context/OpenGL/OpenGLContext.h"
+
+struct WindowProps {
+    uint16_t Width = 600;
+    uint16_t Height = 800;
+    std::string Name;
+
+    uint16_t MousePosX = 0;
+    uint16_t MousePosY = 0;
+    uint16_t PrevMousePosX = 0;
+    uint16_t PrevMousePosY = 0;
+    bool MouseIn = false;
+};
 
 class Window {
     public:
@@ -11,16 +22,11 @@ class Window {
         // Getters
         inline GLFWwindow* GetNativeWindow() const {return m_window;}
         inline bool IsRunning() const {return m_isRunning;}
-        inline uint16_t GetWindowWidth() const {return m_width;}
-        inline uint16_t GetWindowHeight() const {return m_height;}
-        inline std::string GetWindowName() const {return m_name;}
+        inline WindowProps GetWindowProps() const {return m_windowProps;}
 
     private:
         GLFWwindow* m_window = nullptr;
-        GraphicsContext* m_context;
-
-        uint16_t m_width = 600;
-        uint16_t m_height = 800;
-        std::string& m_name;
+        GraphicsContext* m_context = nullptr;
+        WindowProps m_windowProps;
         bool m_isRunning = true;
 };

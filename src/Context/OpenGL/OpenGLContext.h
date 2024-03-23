@@ -1,13 +1,14 @@
 #pragma once
-#include "../../Renderer/GraphicsContext.h"
 #include "../../Window.h"
+#include "../../Renderer/GraphicsContext.h"
 
 
 class OpenGLContext : public GraphicsContext {
     public:
-        OpenGLContext(std::shared_ptr<Window> window);
+        OpenGLContext(Window* window) : m_window(window) {}
         void Init() override;
         void SwapBuffers() override;
     private:
+        Window* m_window = nullptr;
         
 };
