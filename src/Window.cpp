@@ -30,14 +30,13 @@ static void on_window_resize_callback(GLFWwindow* window, int width, int height)
 
 Window::Window(std::string name, uint16_t w, uint16_t h)
 {
-   m_windowProps.Name = name;
-   m_windowProps.Width = w;
-   m_windowProps.Height = h;
+    m_windowProps.Name = name;
+    m_windowProps.Width = w;
+    m_windowProps.Height = h;
 
-   m_window = glfwCreateWindow(m_windowProps.Width, m_windowProps.Height, m_windowProps.Name.c_str(), nullptr, nullptr);
-
-   glfwInit();
-   glfwSetWindowUserPointer(m_window, this);
+    glfwInit();
+    m_window = glfwCreateWindow(m_windowProps.Width, m_windowProps.Height, m_windowProps.Name.c_str(), nullptr, nullptr);
+    glfwSetWindowUserPointer(m_window, this);
     // The following functions are glfw-specific callback functions, where the 2nd parameter
     // takes in one of our application functions and fillts its parameters with the appropriate
     // data. 
@@ -45,9 +44,12 @@ Window::Window(std::string name, uint16_t w, uint16_t h)
     glfwSetCursorPosCallback(m_window, on_mouse_move_callback);
     glfwSetFramebufferSizeCallback(m_window, on_window_resize_callback);
     glfwMakeContextCurrent(m_window);
-   //  glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //  glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-   m_context = new OpenGLContext(this);
+
+    m_context = new OpenGLContext(this); // OpenGL for now.
+    m_context->Init();
+
 }
 
 void Window::Render() 

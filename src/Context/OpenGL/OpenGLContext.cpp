@@ -29,6 +29,6 @@ void OpenGLContext::Init()
 }
 void OpenGLContext::SwapBuffers() 
 {
-    
+    glfwSwapBuffers(m_window->GetNativeWindow());
 }
 

@@ -12,7 +12,7 @@ class Renderer {
         // Getter
         inline static RendererAPI GetAPI() {return m_rendererAPI;}
         // Setter
-        inline static RendererAPI SetAPI(RendererAPI contextType)
+        inline static void SetAPI(RendererAPI contextType)
         {   
             m_rendererAPI = contextType;
         }

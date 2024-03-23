@@ -5,8 +5,8 @@ APP_NAME = app
 VERSION=-std=c++17
 DEBUG= -g -fsanitize=address -fno-omit-frame-pointer -Wall -Wextra
 BUILD_DIR = bin
-C_FILES = ./src/*.cpp
-HEADER_FILES = -I./src/*.h
+C_FILES = ./src/*.cpp ./src/Context/OpenGL/*.cpp ./src/Renderer/*.cpp ./vendor/glad/*.cpp 
+HEADER_FILES = -I./src/*.h -I./src/Context/OpenGL/*.h  -I./src/Renderer/*.h
 APP_INCLUDES = -I$(INCLUDES_PATH) -framework Cocoa -framework OpenGL -framework IOkit -I$(INCLUDES_PATH)
 APP_LINKERS = -L$(GLFW_BINARIES_PATH) -lglfw3 -L$(ASSIMP_BINARIES_PATH) -lassimp.5 
 
