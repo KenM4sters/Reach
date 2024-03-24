@@ -26,6 +26,8 @@ void OpenGLContext::Init()
     }
     glEnable(GL_DEPTH_TEST);
 
+    
+
 }
 void OpenGLContext::SwapBuffers() 
 {

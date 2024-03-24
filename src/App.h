@@ -2,6 +2,7 @@
 #include "Core.h"
 #include "Window.h"
 #include "LayerStack.h"
+#include "Renderer/Renderer.h"
 
 /**
  * The App class is very simple and barebones - merely acts as an entry point to initiate 

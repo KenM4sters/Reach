@@ -7,6 +7,20 @@
 #include <iostream>
 #include <stdlib.h>
 #include <vector>
+#include <cassert>
+
+
+/**
+ * Vertex Struct to hold important data for every vertex of model.
+ * @param Position XYZ coords in 3D space.
+ * @param Normal XYZ coords of a normalised vector perpendicular to its position.
+ * @param UV 2 Dimensional coordiantes that correspond to specific fragment on a texture. 
+*/
+struct Vertex {
+    glm::vec3 Position;
+    glm::vec3 Normal;
+    glm::vec2 UV;
+};
 
 /**
  * Static Time utility function used to access the elapsed time in miliseconds    
@@ -16,12 +30,12 @@ namespace ReachUtils
     class Time {
         public:
             // Returns the time since the start of the GLFW window in seconds.
-            const inline static float GetElapsedTime() 
+            inline static float GetElapsedTime() 
             {
                 return static_cast<float>(glfwGetTime());
             }
             // Returns the time between frames in seconds.
-            const inline static float& GetDeltaTime() 
+            inline static float& GetDeltaTime() 
             {
                 return m_deltaTime;
             }

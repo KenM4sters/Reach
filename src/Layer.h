@@ -14,6 +14,10 @@ class Layer {
         virtual void OnAttach() {}
         virtual void OnDetach() {}
         virtual void Update() {} 
+
+        std::string GetName() const {
+            return m_debugName;
+        }
     private:
         std::string m_debugName;
 };

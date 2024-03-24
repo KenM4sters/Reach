@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "Renderer/Renderer.h"
 #include "Context/OpenGL/OpenGLContext.h"
+#include "Renderer/Buffer.h"
 
 static void on_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     auto p_window = static_cast<Window*>(glfwGetWindowUserPointer(window));   
@@ -47,14 +48,12 @@ Window::Window(std::string name, uint16_t w, uint16_t h)
     //  glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     m_context = new OpenGLContext(this); // OpenGL for now.
-    m_context->Init();
-
+    m_context->Init();    
 }
 
 void Window::Update() 
 {
     m_context->SwapBuffers();
     glfwPollEvents();
-    std::cout << ReachUtils::Time::GetDeltaTime() << std::endl;
 }
 

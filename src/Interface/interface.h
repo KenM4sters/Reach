@@ -13,6 +13,4 @@ class InterfaceLayer : public Layer {
         void OnAttach() override;
         void OnDetach() override;
         void Update() override; 
-    private:
-        Window* m_window;
 };

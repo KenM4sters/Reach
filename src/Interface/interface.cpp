@@ -5,7 +5,7 @@
 InterfaceLayer::InterfaceLayer()
     : Layer("InterfaceLayer")
 {
-
+    
 }
 void InterfaceLayer::OnAttach() 
 {
@@ -23,6 +23,7 @@ void InterfaceLayer::OnAttach()
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(app.GetWindow().GetNativeWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 330");
+
 }
 
 void InterfaceLayer::OnDetach() 
