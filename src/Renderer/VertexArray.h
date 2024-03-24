@@ -6,5 +6,5 @@ class VertexArray {
         virtual ~VertexArray() {}
         virtual void Bind() const = 0;
         virtual void Unbind() const = 0;
-        static VertexArray* Create(VertexBuffer& vertex_buffer, IndexBuffer& index_buffer);
+        static VertexArray* Create(VertexBuffer* vertex_buffer, IndexBuffer* index_buffer);
 };

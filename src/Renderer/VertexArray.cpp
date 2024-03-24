@@ -3,7 +3,7 @@
 #include "../Context/OpenGL/OpenGLVertexArray.h"
 
 
-VertexArray* VertexArray::Create(VertexBuffer& vertex_buffer, IndexBuffer& index_buffer) 
+VertexArray* VertexArray::Create(VertexBuffer* vertex_buffer, IndexBuffer* index_buffer) 
 {
     switch(Renderer::GetAPI()) 
     {

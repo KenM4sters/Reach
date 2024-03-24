@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Vertex Buffer
 ////////////////////////////////////////////////////////////////
-OpenGLVertexBuffer:: OpenGLVertexBuffer(std::vector<Vertex>& vertices, uint32_t size)
+OpenGLVertexBuffer::OpenGLVertexBuffer(std::vector<Vertex>& vertices, uint32_t size)
     : m_vertices(vertices)
 {
     glGenBuffers(1, &m_VBO);
@@ -30,7 +30,7 @@ OpenGLVertexBuffer::~OpenGLVertexBuffer()
 ////////////////////////////////////////////////////////////////
 // Index Buffer
 ////////////////////////////////////////////////////////////////
-OpenGLIndexBuffer::OpenGLIndexBuffer(float* indices, uint32_t size) 
+OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t size) 
 {
     glGenBuffers(1, &m_EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);

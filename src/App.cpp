@@ -10,6 +10,7 @@ void App::Run()
             layer->Update();
         }
         m_window->Update();
+
         ReachUtils::Time::Update();
     }
 }
