@@ -1,5 +1,6 @@
+#pragma once
 #include "Layer.h"
-#include "Helpers/Includes.h"
+#include "Core.h"
 
 class LayerStack {
     public:

@@ -1,5 +1,5 @@
 #include "OpenGLContext.h"
-#include "../../Helpers/Includes.h"
+#include "../../Core.h"
 
 void OpenGLContext::Init() 
 {   

@@ -53,6 +53,8 @@ Window::Window(std::string name, uint16_t w, uint16_t h)
 
 void Window::Update() 
 {
-    std::cout << "Rendering" << std::endl;   
+    m_context->SwapBuffers();
+    glfwPollEvents();
+    std::cout << ReachUtils::Time::GetDeltaTime() << std::endl;
 }
 

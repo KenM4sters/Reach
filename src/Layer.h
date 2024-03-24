@@ -1,4 +1,5 @@
-#include "Helpers/Includes.h"
+#pragma once
+#include "Core.h"
 
 class Layer {
     public:
