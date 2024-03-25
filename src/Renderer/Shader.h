@@ -13,7 +13,7 @@ class Shader {
         virtual void Compile(const char* v_shader, const char* f_shader, const char* g_shader = nullptr) = 0;
 
         // Set Shader Uniforms
-        //----------------------------------------------------------------
+        //================================================================
         virtual void SetFloat(std::string name, float value) = 0;
         virtual void SetInt(std::string name, int value) = 0;
         virtual void SetVec2f(std::string name, float x, float y) = 0;
@@ -23,7 +23,7 @@ class Shader {
         virtual void SetVec4f(std::string name, float x, float y, float z, float w) = 0;
         virtual void SetVec4f(std::string name, const glm::vec4& value) = 0;
         virtual void SetMat4f(std::string name, const glm::mat4& matrix) = 0;
-        //----------------------------------------------------------------
+        //================================================================
 
         virtual void CheckCompilationErrors(unsigned int object, std::string type) = 0;
     protected:

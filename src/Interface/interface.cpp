@@ -21,7 +21,7 @@ void InterfaceLayer::OnAttach()
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
     // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(app.GetWindow().GetNativeWindow(), true);
+    ImGui_ImplGlfw_InitForOpenGL(app.GetWindow()->GetNativeWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
 }

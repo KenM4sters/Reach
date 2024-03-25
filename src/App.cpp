@@ -8,11 +8,7 @@ void App::Run()
     {
         m_window->PreRender();
 
-        vao->Bind();
-        m_shader->Use();
-        Renderer::Submit(vao);
-        vao->Unbind();
-        m_shader->Release();
+        Renderer::Submit(vao, m_shader);
         
         for(const auto& layer : *m_layerStack.get()) {
             layer->Update();
@@ -20,7 +16,7 @@ void App::Run()
 
         m_window->PostRender();
 
-        ReachUtils::Time::Update();
+        ReachCore::Time::Update();
     }
 }
 

@@ -9,6 +9,11 @@
 #include <vector>
 #include <cassert>
 
+/**
+ * Example containers for rendering a square 
+*/ 
+extern std::vector<float> square_vertices;
+extern uint32_t square_indices[6];  
 
 /**
  * Vertex Struct to hold important data for every vertex of model.
@@ -22,10 +27,14 @@ struct Vertex {
     glm::vec2 UV;
 };
 
+// Helper function to convert a vector of floats to a vector of Vertex structs, which is 
+// what the engine uses to render primitves to the screen.
+std::vector<Vertex> MakeVertexFromFloat(std::vector<float> f_vertices);
+
 /**
  * Static Time utility function used to access the elapsed time in miliseconds    
 */
-namespace ReachUtils 
+namespace ReachCore 
 {
     class Time {
         public:

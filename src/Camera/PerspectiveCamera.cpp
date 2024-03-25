@@ -37,7 +37,7 @@ void PerspectiveCamera::UpdateProjectionMatrix()
 
 void PerspectiveCamera::HandleUserInput(TransformDirection direction, bool speed_up) 
 {
-    float speed = 1.0f * ReachUtils::Time::GetDeltaTime();
+    float speed = 1.0f * ReachCore::Time::GetDeltaTime();
     if(speed_up)
         speed *= 10;
     

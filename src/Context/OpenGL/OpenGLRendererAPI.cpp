@@ -32,7 +32,6 @@ void OpenGLRendererAPI::Flush()
 //================================================================
 void OpenGLRendererAPI::DrawIndexed(const std::shared_ptr<VertexArray>& VAO) 
 {
-    std::cout << VAO->GetIndexBuffer()->GetCount() << std::endl;
     glDrawElements(GL_TRIANGLES, VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
 }
 //================================================================
