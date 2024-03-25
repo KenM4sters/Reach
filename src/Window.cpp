@@ -76,9 +76,14 @@ Window::Window(std::string name, uint16_t w, uint16_t h)
     glEnable(GL_DEPTH_TEST);
 }
 
-void Window::Update() 
+void Window::PreRender() 
 {
-    m_context->SwapBuffers();
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+void Window::PostRender() 
+{
     glfwPollEvents();
+    m_context->SwapBuffers();
 }
 

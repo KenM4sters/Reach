@@ -61,7 +61,7 @@ void OpenGLShader::LoadFromFile(const char* vert_src, const char* frag_src, cons
     CheckCompilationErrors(s_fragment, "FRAGMENT");
 
     // If the geometry shader source code is given then compile the geometry shader.
-    if (g_shader != nullptr)
+    if (geo_src != nullptr)
     {
         s_geometry = glCreateShader(GL_GEOMETRY_SHADER);
         glShaderSource(s_geometry, 1, &g_shader, NULL);
@@ -72,7 +72,7 @@ void OpenGLShader::LoadFromFile(const char* vert_src, const char* frag_src, cons
     this->m_ID = glCreateProgram();
     glAttachShader(this->m_ID, s_vertex);
     glAttachShader(this->m_ID, s_fragment);
-    if (g_shader != nullptr)
+    if (geo_src != nullptr)
         glAttachShader(this->m_ID, s_geometry);
     glLinkProgram(this->m_ID);
     CheckCompilationErrors(this->m_ID, "PROGRAM");

@@ -1,9 +1,11 @@
 #pragma once
+#include "Renderer/Renderer.h"
 #include "Core.h"
 #include "Window.h"
 #include "LayerStack.h"
-#include "Renderer/Renderer.h"
 #include "Renderer/VertexArray.h"
+#include "Renderer/Shader.h"
+#include "Context/OpenGL/OpenGLShader.h"
 
 /**
  * The App class is very simple and barebones - merely acts as an entry point to initiate 
@@ -20,27 +22,33 @@ class App {
             const std::vector<float> square_vertices = {
                 0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   1.0f, 1.0f,  
                 0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   1.0f, 0.0f,   
-                -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   
-                -0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   0.0f, 1.0f  
+                -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,   
+                -0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f  
             };
             uint32_t square_indices[] = {
                 0, 1, 3,   
                 1, 2, 3 
             };  
             std::vector<Vertex> vertices;
-            for(int i = 0; i < 3; i++) {
-                for(int j = 0; j < 7; j++) {
-                    Vertex vertex;
-                    vertex.Position = {square_vertices[i*j], square_vertices[(i*j)+1], square_vertices[(i*j)+2]};
-                    vertex.Normal = {square_vertices[(i*j)+3], square_vertices[(i*j)+4], square_vertices[(i*j)+5]};
-                    vertex.UV = {square_vertices[(i*j)+6], square_vertices[(i*j)+7]};
-                    vertices.push_back(vertex);
-                }
+            for(int i = 0; i < 4; i++) {
+                Vertex vertex;
+                vertex.Position = {square_vertices[(i*8) + 0], square_vertices[(i*8) + 1], square_vertices[(i*8) + 2]};
+                vertex.Normal = {square_vertices[(i*8) + 3], square_vertices[(i*8) + 4], square_vertices[(i*8) + 5]};
+                vertex.UV = {square_vertices[(i*8) + 6], square_vertices[(i*8) + 7]};
+                vertices.push_back(vertex);
+                std::cout << "Pos: " << vertex.Position.x << vertex.Position.y << vertex.Position.z << std::endl;
+                std::cout << "Norm: " << vertex.Normal.x << vertex.Normal.y << vertex.Normal.z << std::endl;
+                std::cout << "Uv: " << vertex.UV.x << vertex.UV.y << std::endl;
             }
 
-            auto vbo = VertexBuffer::Create(vertices, vertices.size()*sizeof(float));
+            auto vbo = VertexBuffer::Create(vertices, vertices.size()*sizeof(Vertex));
             auto ebo = IndexBuffer::Create(square_indices, sizeof(square_indices));
             vao = VertexArray::Create(vbo, ebo);
+
+            std::string name = "quad_shader";
+            m_shader = new OpenGLShader(name, "src/Shaders/quad.vert", "src/Shaders/quad.frag");
+
+
         }
         void Run(); 
 
@@ -53,4 +61,6 @@ class App {
         std::unique_ptr<LayerStack> m_layerStack = nullptr;
         static App* s_instance;
         VertexArray* vao = nullptr;
+        Shader* m_shader = nullptr;
+        
 };

@@ -22,7 +22,8 @@ struct WindowProps {
 class Window {
     public:
         Window(std::string name, uint16_t w, uint16_t h);
-        void Update();
+        void PreRender();
+        void PostRender();
 
         // Getters
         inline GLFWwindow* GetNativeWindow() const {return m_window;}
