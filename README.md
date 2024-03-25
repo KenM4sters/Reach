@@ -8,7 +8,7 @@ While using OpenGL to start with, the project structure should also facilitate t
 ## Previous Project's Learning Outcomes (sandbox_engine)
 - Experiment with static on key classes (Asset Managers && Camera?).
 - Be consistent with smart pointers vs raw pointers.
-- Use the `const` keyword as often as possible (including in/after functions) - think like a Rust programmer.
+- Use the `const` keyword whenever it's appropriate to (including in/after functions) - think like a Rust programmer (immutability first).
 
 
 

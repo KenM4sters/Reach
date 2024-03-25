@@ -8,7 +8,9 @@ class Shader {
         {
         }
         virtual void Use() = 0; 
+        virtual void Release() = 0; 
         virtual void LoadFromFile(const char* vert_src, const char* frag_src, const char* geo_src = nullptr) = 0;
+        virtual void Compile(const char* v_shader, const char* f_shader, const char* g_shader = nullptr) = 0;
 
         // Set Shader Uniforms
         //----------------------------------------------------------------

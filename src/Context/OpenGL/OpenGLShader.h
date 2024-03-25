@@ -9,7 +9,9 @@ class OpenGLShader : public Shader {
             LoadFromFile(vert_src, frag_src, geo_src);
         }
         void Use() override;
+        void Release() override;
         void LoadFromFile(const char* vert_src, const char* frag_src, const char* geo_src = nullptr) override;
+        void Compile(const char* v_shader, const char* f_shader, const char* g_shader = nullptr) override;
         void SetFloat(std::string name, float value) override;
         void SetInt(std::string name, int value) override;
         void SetVec2f(std::string name, float x, float y) override;

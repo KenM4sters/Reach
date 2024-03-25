@@ -36,9 +36,6 @@ class App {
                 vertex.Normal = {square_vertices[(i*8) + 3], square_vertices[(i*8) + 4], square_vertices[(i*8) + 5]};
                 vertex.UV = {square_vertices[(i*8) + 6], square_vertices[(i*8) + 7]};
                 vertices.push_back(vertex);
-                std::cout << "Pos: " << vertex.Position.x << vertex.Position.y << vertex.Position.z << std::endl;
-                std::cout << "Norm: " << vertex.Normal.x << vertex.Normal.y << vertex.Normal.z << std::endl;
-                std::cout << "Uv: " << vertex.UV.x << vertex.UV.y << std::endl;
             }
 
             auto vbo = VertexBuffer::Create(vertices, vertices.size()*sizeof(Vertex));

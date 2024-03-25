@@ -4,7 +4,28 @@
 #include "Renderer/Buffer.h"
 
 static void on_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    auto p_window = static_cast<Window*>(glfwGetWindowUserPointer(window));   
+    auto p_window = static_cast<Window*>(glfwGetWindowUserPointer(window));
+    switch(key) 
+    {
+        case GLFW_KEY_ESCAPE:
+            if(action == GLFW_PRESS) p_window->SetStatus(false);
+            break;
+        case GLFW_KEY_SPACE:
+            if(action == GLFW_PRESS) std::cout << "SPACE_BAR pressed!" << std::endl;
+            break;
+        case GLFW_KEY_W:
+            if(action == GLFW_PRESS) std::cout << "W key pressed!" << std::endl;
+            break;
+        case GLFW_KEY_A:
+            if(action == GLFW_PRESS) std::cout << "A key pressed!" << std::endl;
+            break;
+        case GLFW_KEY_S:
+            if(action == GLFW_PRESS) std::cout << "S key pressed!" << std::endl;
+            break;
+        case GLFW_KEY_D:
+            if(action == GLFW_PRESS) std::cout << "D key pressed!" << std::endl;
+            break;
+    } 
 }
 
 static void on_mouse_move_callback(GLFWwindow* window, double pos_x, double pos_y) {
@@ -27,6 +48,12 @@ static void on_mouse_move_callback(GLFWwindow* window, double pos_x, double pos_
 
 static void on_window_resize_callback(GLFWwindow* window, int width, int height) {
     auto p_window = static_cast<Window*>(glfwGetWindowUserPointer(window));
+}
+
+static void on_window_close_callback(GLFWwindow* window) 
+{
+    auto p_window = static_cast<Window*>(glfwGetWindowUserPointer(window));
+    p_window->SetStatus(false);
 }
 
 Window::Window(std::string name, uint16_t w, uint16_t h)
@@ -57,15 +84,19 @@ Window::Window(std::string name, uint16_t w, uint16_t h)
         std::cout << "FAILED to create GLFW window!" << std::endl;
     }
 
-    glfwSetWindowUserPointer(m_window, this);
+
     // The following functions are glfw-specific callback functions, where the 2nd parameter
     // takes in one of our application functions and fillts its parameters with the appropriate
     // data. 
+    //----------------------------------------------------------------
+    glfwSetWindowUserPointer(m_window, this);
     glfwSetKeyCallback(m_window, on_key_callback);
     glfwSetCursorPosCallback(m_window, on_mouse_move_callback);
     glfwSetFramebufferSizeCallback(m_window, on_window_resize_callback);
     glfwMakeContextCurrent(m_window);
+    glfwSetWindowCloseCallback(m_window, on_window_close_callback);
     //  glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //----------------------------------------------------------------
 
     // In order to use modern OpenGL (and updated version of OpenGL with more functions, types etc...), 
     // we need to load a library that allows us to access the updated api.
@@ -85,5 +116,10 @@ void Window::PostRender()
 {
     glfwPollEvents();
     m_context->SwapBuffers();
+}
+
+inline void HandleResize(int w, int h) 
+{
+    glViewport(0, 0, w, h);
 }
 

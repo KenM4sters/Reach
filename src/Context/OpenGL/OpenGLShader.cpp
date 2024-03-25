@@ -8,6 +8,11 @@ void OpenGLShader::Use()
     glUseProgram(m_ID);
 }
 
+void OpenGLShader::Release() 
+{
+    glUseProgram(0);
+}
+
 void OpenGLShader::LoadFromFile(const char* vert_src, const char* frag_src, const char* geo_src) 
 {
         // 1. retrieve the vertex/fragment source code from filePath
@@ -41,13 +46,25 @@ void OpenGLShader::LoadFromFile(const char* vert_src, const char* frag_src, cons
     }
     catch (std::exception e)
     {
-        std::cout << "ERROR::SHADER: Failed to read shader files" << std::endl;
+        try
+        {
+            Compile(vert_src, frag_src, geo_src);
+        }
+        catch(std::exception e) 
+        {
+            std::cout << "ERROR::SHADER: Failed to read shader files" << std::endl;
+        }
     }
     const char *v_shader = v_code.c_str();
     const char *f_shader = f_code.c_str();
     const char *g_shader = g_code.c_str();
 
     // Compilation of shader source code into OpenGL "Shader Programs".
+    Compile(v_shader, f_shader, geo_src != nullptr ? g_shader : nullptr);
+}
+
+void OpenGLShader::Compile(const char* v_shader, const char* f_shader, const char* g_shader) 
+{
     uint32_t s_vertex, s_fragment, s_geometry;
 
     s_vertex = glCreateShader(GL_VERTEX_SHADER);
@@ -61,7 +78,7 @@ void OpenGLShader::LoadFromFile(const char* vert_src, const char* frag_src, cons
     CheckCompilationErrors(s_fragment, "FRAGMENT");
 
     // If the geometry shader source code is given then compile the geometry shader.
-    if (geo_src != nullptr)
+    if (g_shader != nullptr)
     {
         s_geometry = glCreateShader(GL_GEOMETRY_SHADER);
         glShaderSource(s_geometry, 1, &g_shader, NULL);
@@ -72,7 +89,7 @@ void OpenGLShader::LoadFromFile(const char* vert_src, const char* frag_src, cons
     this->m_ID = glCreateProgram();
     glAttachShader(this->m_ID, s_vertex);
     glAttachShader(this->m_ID, s_fragment);
-    if (geo_src != nullptr)
+    if (g_shader != nullptr)
         glAttachShader(this->m_ID, s_geometry);
     glLinkProgram(this->m_ID);
     CheckCompilationErrors(this->m_ID, "PROGRAM");
@@ -81,6 +98,7 @@ void OpenGLShader::LoadFromFile(const char* vert_src, const char* frag_src, cons
     glDeleteShader(s_fragment);
     if (g_shader != nullptr)
         glDeleteShader(s_geometry);
+
 }
 
 void OpenGLShader::SetFloat(std::string name, float value)
