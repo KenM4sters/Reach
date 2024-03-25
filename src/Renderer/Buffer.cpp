@@ -4,15 +4,15 @@
 
 VertexBuffer* VertexBuffer::Create(std::vector<Vertex>& vertices, uint32_t size) 
 {
-    switch(Renderer::GetAPI()) 
+    switch(Renderer::m_rendererAPI->GetAPI()) 
     {
-        case RendererAPI::VOID:
+        case API::VOID:
             throw std::runtime_error("ERROR::VertexBuffer::Create() - RendererAPI is currently set to VOID!");
             break;
-        case RendererAPI::OPEN_GL:
+        case API::OPEN_GL:
             return new OpenGLVertexBuffer(vertices, size);
             break;
-        case RendererAPI::VULKAN:
+        case API::VULKAN:
             throw std::runtime_error("Error::VertexBuffer::Create() - RendererAPI::Vulkan is currently unavailabe.");
             break;
     }
@@ -20,15 +20,15 @@ VertexBuffer* VertexBuffer::Create(std::vector<Vertex>& vertices, uint32_t size)
 }
 IndexBuffer* IndexBuffer::Create(uint32_t* indices, uint32_t size) 
 {
-    switch(Renderer::GetAPI()) 
+    switch(Renderer::m_rendererAPI->GetAPI()) 
     {
-        case RendererAPI::VOID:
-            throw std::runtime_error("ERROR::VertexBuffer::Create() - RendererAPI is currently set to VOID!");
+        case API::VOID:
+            throw std::runtime_error("ERROR::VertexBuffer::Create() - Renderer::m_rendererAPI::API is currently set to VOID!");
             break;
-        case RendererAPI::OPEN_GL:
+        case API::OPEN_GL:
             return new OpenGLIndexBuffer(indices, size);
             break;
-        case RendererAPI::VULKAN:
+        case API::VULKAN:
             throw std::runtime_error("Error::VertexBuffer::Create() - RendererAPI::Vulkan is currently unavailabe.");
             break;   
     }

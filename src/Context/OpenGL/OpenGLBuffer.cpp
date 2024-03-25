@@ -30,8 +30,9 @@ OpenGLVertexBuffer::~OpenGLVertexBuffer()
 ////////////////////////////////////////////////////////////////
 // Index Buffer
 ////////////////////////////////////////////////////////////////
-OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t size) 
+OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t size)
 {
+    m_count = size;
     glGenBuffers(1, &m_EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);

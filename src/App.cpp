@@ -10,9 +10,9 @@ void App::Run()
 
         vao->Bind();
         m_shader->Use();
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        // vao->Unbind();
-        // glUseProgram(0);
+        Renderer::Submit(vao);
+        vao->Unbind();
+        m_shader->Release();
         
         for(const auto& layer : *m_layerStack.get()) {
             layer->Update();

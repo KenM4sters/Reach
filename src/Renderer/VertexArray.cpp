@@ -5,15 +5,15 @@
 
 VertexArray* VertexArray::Create(VertexBuffer* vertex_buffer, IndexBuffer* index_buffer) 
 {
-    switch(Renderer::GetAPI()) 
+    switch(RendererAPI::GetAPI()) 
     {
-        case RendererAPI::VOID:
+        case API::VOID:
             throw std::runtime_error("ERROR::VertexArray::Create() - RendererAPI is currently set to VOID!");
             break;
-        case RendererAPI::OPEN_GL:
+        case API::OPEN_GL:
             return new OpenGLVertexArray(vertex_buffer, index_buffer);
             break;
-        case RendererAPI::VULKAN:
+        case API::VULKAN:
             throw std::runtime_error("Error::VertexArray::Create() - RendererAPI::Vulkan is currently unavailabe.");
             break;
     }

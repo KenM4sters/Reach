@@ -1,7 +1,9 @@
 #include "OpenGLVertexArray.h"
 
-OpenGLVertexArray::OpenGLVertexArray(VertexBuffer* vertex_buffer, IndexBuffer* index_buffer) 
+OpenGLVertexArray::OpenGLVertexArray(VertexBuffer* vertex_buffer, IndexBuffer* index_buffer)
 {   
+    m_vertexBuffer = vertex_buffer;
+    m_indexBuffer = index_buffer;
     glGenVertexArrays(1, &m_VAO);
     glBindVertexArray(m_VAO);
     vertex_buffer->Bind(); 

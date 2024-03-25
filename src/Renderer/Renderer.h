@@ -1,20 +1,10 @@
 #pragma once
-
-// Possible types of APIs to call from.
-enum class RendererAPI {
-    VOID = 0,
-    OPEN_GL = 1,
-    VULKAN = 2
-};
+#include "RendererAPI.h"
 
 class Renderer {
     public:
-        // Getter
-        inline static RendererAPI GetAPI() {return m_rendererAPI;}
-        // Setter
-        inline static void SetAPI(RendererAPI contextType)
-        {   
-            m_rendererAPI = contextType;
-        }
-        static RendererAPI m_rendererAPI;
+        static void Submit(const std::shared_ptr<VertexArray> VAO);
+    public:
+        static RendererAPI* m_rendererAPI;
+
 };

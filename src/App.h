@@ -25,7 +25,7 @@ class App {
                 -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,   
                 -0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f  
             };
-            uint32_t square_indices[] = {
+            uint32_t square_indices[6] = {
                 0, 1, 3,   
                 1, 2, 3 
             };  
@@ -40,7 +40,7 @@ class App {
 
             auto vbo = VertexBuffer::Create(vertices, vertices.size()*sizeof(Vertex));
             auto ebo = IndexBuffer::Create(square_indices, sizeof(square_indices));
-            vao = VertexArray::Create(vbo, ebo);
+            vao = static_cast<std::shared_ptr<VertexArray>>(VertexArray::Create(vbo, ebo));
 
             std::string name = "quad_shader";
             m_shader = new OpenGLShader(name, "src/Shaders/quad.vert", "src/Shaders/quad.frag");
@@ -57,7 +57,7 @@ class App {
         std::shared_ptr<Window> m_window = nullptr;
         std::unique_ptr<LayerStack> m_layerStack = nullptr;
         static App* s_instance;
-        VertexArray* vao = nullptr;
+        std::shared_ptr<VertexArray> vao = nullptr;
         Shader* m_shader = nullptr;
         
 };

@@ -63,15 +63,15 @@ Window::Window(std::string name, uint16_t w, uint16_t h)
     m_windowProps.Height = h;
 
     glfwInit();
-    switch(Renderer::GetAPI()) 
+    switch(Renderer::m_rendererAPI->GetAPI()) 
     {
-        case RendererAPI::VOID:
+        case API::VOID:
             throw std::runtime_error("ERROR::VertexBuffer::Create() - RendererAPI is currently set to VOID!");
             break;
-        case RendererAPI::OPEN_GL:
+        case API::OPEN_GL:
             m_context = new OpenGLContext(this); // OpenGL for now.
             break;
-        case RendererAPI::VULKAN:
+        case API::VULKAN:
             throw std::runtime_error("Error::VertexBuffer::Create() - RendererAPI::Vulkan is currently unavailabe.");
             break;
     }
@@ -109,17 +109,18 @@ Window::Window(std::string name, uint16_t w, uint16_t h)
 
 void Window::PreRender() 
 {
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glm::vec4 color(0.1f, 0.1f, 0.1f, 1.0f);
+    Renderer::m_rendererAPI->SetClearColor(color);
+    Renderer::m_rendererAPI->Flush();
 }
 void Window::PostRender() 
 {
-    glfwPollEvents();
-    m_context->SwapBuffers();
+    Renderer::m_rendererAPI->ListenToEvents();
+    Renderer::m_rendererAPI->SwapBuffers(m_window);
 }
 
 inline void HandleResize(int w, int h) 
 {
-    glViewport(0, 0, w, h);
+    Renderer::m_rendererAPI->SetViewportDimensions(w, h);
 }
 

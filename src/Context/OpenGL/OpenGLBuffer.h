@@ -26,6 +26,7 @@ class OpenGLIndexBuffer : public IndexBuffer {
         virtual void Bind() const;
         virtual void Unbind() const;
         uint32_t GetID() const { return m_EBO;}
+        uint32_t GetCount() const {return m_count;}
     private:
         uint32_t m_EBO;
 };

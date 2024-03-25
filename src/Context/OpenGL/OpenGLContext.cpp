@@ -9,8 +9,4 @@ void OpenGLContext::Init()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);    
 
 }
-void OpenGLContext::SwapBuffers() 
-{
-    glfwSwapBuffers(m_window->GetNativeWindow());
-}
 

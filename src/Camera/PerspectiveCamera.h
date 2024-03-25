@@ -53,7 +53,6 @@ class PerspectiveCamera {
         // @param direction glm::vec3 that holds the direction of the movement/rotation.
         // @param speed_up A boolean which, if set to TRUE, will speed up camera movement.
         void HandleUserInput(TransformDirection direction, bool speed_up);
-        void HandleUserInput(TransformDirection direction, bool speed_up);
     private:
         void UpdateViewMatrix();
         void UpdateProjectionMatrix();
