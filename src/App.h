@@ -40,9 +40,7 @@ class App {
 
             auto vbo = VertexBuffer::Create(vertices, vertices.size()*sizeof(float));
             auto ebo = IndexBuffer::Create(square_indices, sizeof(square_indices));
-            // vao = VertexArray::Create(vbo, ebo);
-            uint32_t m_VAO;
-            glGenVertexArrays(1, &m_VAO);
+            vao = VertexArray::Create(vbo, ebo);
         }
         void Run(); 
 

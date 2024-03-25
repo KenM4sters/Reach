@@ -26,6 +26,7 @@ class Window {
 
         // Getters
         inline GLFWwindow* GetNativeWindow() const {return m_window;}
+        inline void SetNativeWindow(GLFWwindow* window) {m_window = window;}
         inline bool IsRunning() const {return m_isRunning;}
         inline WindowProps GetWindowProps() const {return m_windowProps;}
 

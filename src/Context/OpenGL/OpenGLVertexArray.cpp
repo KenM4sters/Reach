@@ -4,7 +4,7 @@ OpenGLVertexArray::OpenGLVertexArray(VertexBuffer* vertex_buffer, IndexBuffer* i
 {   
     glGenVertexArrays(1, &m_VAO);
     glBindVertexArray(m_VAO);
-    vertex_buffer->Bind();
+    vertex_buffer->Bind(); 
     index_buffer->Bind();
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(0));
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, Normal)));

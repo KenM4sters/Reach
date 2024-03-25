@@ -36,7 +36,27 @@ Window::Window(std::string name, uint16_t w, uint16_t h)
     m_windowProps.Height = h;
 
     glfwInit();
+    switch(Renderer::GetAPI()) 
+    {
+        case RendererAPI::VOID:
+            throw std::runtime_error("ERROR::VertexBuffer::Create() - RendererAPI is currently set to VOID!");
+            break;
+        case RendererAPI::OPEN_GL:
+            m_context = new OpenGLContext(this); // OpenGL for now.
+            break;
+        case RendererAPI::VULKAN:
+            throw std::runtime_error("Error::VertexBuffer::Create() - RendererAPI::Vulkan is currently unavailabe.");
+            break;
+    }
+    m_context->Init();  
+
     m_window = glfwCreateWindow(m_windowProps.Width, m_windowProps.Height, m_windowProps.Name.c_str(), nullptr, nullptr);
+    
+    std::cout<<"INITIALIZING::GLFWWindow"<<std::endl;
+    if(m_window == nullptr) {
+        std::cout << "FAILED to create GLFW window!" << std::endl;
+    }
+
     glfwSetWindowUserPointer(m_window, this);
     // The following functions are glfw-specific callback functions, where the 2nd parameter
     // takes in one of our application functions and fillts its parameters with the appropriate
@@ -47,8 +67,13 @@ Window::Window(std::string name, uint16_t w, uint16_t h)
     glfwMakeContextCurrent(m_window);
     //  glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    m_context = new OpenGLContext(this); // OpenGL for now.
-    m_context->Init();    
+    // In order to use modern OpenGL (and updated version of OpenGL with more functions, types etc...), 
+    // we need to load a library that allows us to access the updated api.
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cout << "FAILED to initialize GLAD" << std::endl;
+    }
+    glEnable(GL_DEPTH_TEST);
 }
 
 void Window::Update() 
