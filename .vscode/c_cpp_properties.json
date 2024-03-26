@@ -10,7 +10,8 @@
                 "/Users/samuelbrookman/Desktop/Engines/Reach/vendor/glad/**",
                 "/Users/samuelbrookman/Desktop/Engines/Reach/vendor/assimp/**",
                 "/Users/samuelbrookman/Desktop/Engines/Reach/vendor/ImGui/**",
-                "/Users/samuelbrookman/Desktop/Engines/Reach/vendor/KHR/**"
+                "/Users/samuelbrookman/Desktop/Engines/Reach/vendor/KHR/**",
+                "/Users/samuelbrookman/Desktop/Engines/Reach/vendor/Stbi_image/**"
             ],
             "defines": [],
             "macFrameworkPath": [

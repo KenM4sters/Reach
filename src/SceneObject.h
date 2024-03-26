@@ -9,7 +9,11 @@ enum OBJECT_TYPE
 
 class SceneObject {
     public:
-        SceneObject() {}
+        SceneObject(OBJECT_TYPE type = OBJECT_TYPE::MESH)
+            : m_objectType(type) 
+        {
+            
+        }
         virtual ~SceneObject() {}
     protected:
         OBJECT_TYPE m_objectType;

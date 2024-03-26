@@ -3,6 +3,7 @@
 #include "SceneObject.h"
 #include "Renderer/VertexArray.h"
 #include "Renderer/Shader.h"
+#include "Renderer/Texture.h"
 
 /**
  * The mesh class is integral to our scene as it's essentially how we encapsulate VAOs together
@@ -22,6 +23,7 @@ struct MaterialProps {
     glm::vec3 Diffuse   = {0.8f, 0.8f, 0.8f};
     glm::vec3 Specular  = {0.2f, 0.2f, 0.2f};
     float Shininess     = 8.0f;
+    std::vector<std::shared_ptr<Texture2D>> Textures;
 };
 
 
@@ -30,20 +32,19 @@ class Material {
         Material(std::shared_ptr<Shader>& shader);
         ~Material()
         { 
-            delete m_props; 
         }
         
         // Getters
-        std::shared_ptr<Shader> GetShader() const { return m_shader;}
-        MaterialProps* GetProps() const { return m_props; }
+        inline std::shared_ptr<Shader> GetShader() const { return m_shader;}
+        inline MaterialProps* GetProps() { return &m_props; }
 
         // Setters
         void SetShader(std::shared_ptr<Shader>& shader) { m_shader = shader; }
-        void SetMaterialProps(MaterialProps* props) { m_props = props; }
+        void SetProps(MaterialProps* props) { m_props = *props; }
 
     private:
-        std::shared_ptr<Shader> m_shader;
-        MaterialProps* m_props;
+        std::shared_ptr<Shader> m_shader = nullptr;
+        MaterialProps m_props;
 
 };
 
@@ -56,13 +57,13 @@ struct TransformProps {
 
 class Mesh : SceneObject {
     public:
-        Mesh(std::shared_ptr<VertexArray>& vertex_aray, Material* material, TransformProps* transform_props);
+        Mesh(std::shared_ptr<VertexArray>& vertex_aray, Material* material, TransformProps* transform_props, OBJECT_TYPE type = OBJECT_TYPE::MESH);
         ~Mesh() {}
 
         // Getters
-        std::shared_ptr<VertexArray> GetVAO() const { return m_vertexArray; }
-        Material* GetMaterial() const { return m_material; }
-        TransformProps* GetTransformProps() const { return m_transformProps; }
+        inline std::shared_ptr<VertexArray> GetVAO() const { return m_vertexArray; }
+        inline Material* GetMaterial() const { return m_material; }
+        inline TransformProps* GetTransformProps() const { return m_transformProps; }
 
         // Setters
         void SetVAO(std::shared_ptr<VertexArray>& vertex_array) { m_vertexArray = vertex_array; }

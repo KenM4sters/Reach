@@ -6,6 +6,7 @@ PerspectiveCamera::PerspectiveCamera(glm::vec3& position, uint32_t& window_width
     m_props.window_width = window_width;
     m_props.window_height = window_height;
     m_projectionMatrix = glm::perspective(m_props.Zoom, (float)window_width / (float)window_height, 0.1f, 1000.0f);
+    UpdateViewMatrix();
 }
 
 void PerspectiveCamera::SetPosition(glm::vec3& position) 
@@ -16,7 +17,7 @@ void PerspectiveCamera::SetPosition(glm::vec3& position)
 
 void PerspectiveCamera::SetRotation(glm::vec3& rotation_axis, float angle) 
 {
-    m_quarternion = glm::rotate(m_quarternion, glm::radians(angle), rotation_axis);
+    m_quaternion = glm::rotate(m_quaternion, glm::radians(angle), rotation_axis);
     UpdateViewMatrix();
 }
 
@@ -41,26 +42,41 @@ void PerspectiveCamera::HandleUserInput(TransformDirection direction, bool speed
     if(speed_up)
         speed *= 10;
     
-    switch(direction) 
-    {
-        case TransformDirection::LEFT:
-            m_position -= m_props.Right;
-            break;
-        case TransformDirection::RIGHT:
-            m_position += m_props.Right;
-            break;
-        case TransformDirection::UP:
-            m_position += m_props.Up;
-            break;
-        case TransformDirection::DOWN:
-            m_position -= m_props.Up;
-            break;
-        case TransformDirection::FORWARD:
-            m_position += m_props.Front;
-            break;
-        case TransformDirection::BACKWARD:
-            m_position -= m_props.Front;
-            break;
-    }
+    // Using switch will mean that only a single direction can be processed at a time (no fluid diagonal movement).
+    // switch(direction) 
+    // {
+    //     case TransformDirection::LEFT:
+    //         m_position += (m_props.Right * speed);
+    //         break;
+    //     case TransformDirection::RIGHT:
+    //         m_position -= (m_props.Right * speed);
+    //         break;
+    //     case TransformDirection::UP:
+    //         m_position += (m_props.Up * speed);
+    //         break;
+    //     case TransformDirection::DOWN:
+    //         m_position -= (m_props.Up * speed);
+    //         break;
+    //     case TransformDirection::FORWARD:
+    //         m_position += (m_props.Front * speed);
+    //         break;
+    //     case TransformDirection::BACKWARD:
+    //         m_position -= (m_props.Front * speed);
+    //         break;
+    // }
+
+    if(direction == TransformDirection::LEFT)
+        m_position += (m_props.Right * speed);
+    if(direction == TransformDirection::RIGHT)
+        m_position -= (m_props.Right * speed);
+    if(direction == TransformDirection::UP)
+        m_position += (m_props.Up * speed);
+    if(direction == TransformDirection::DOWN)
+        m_position -= (m_props.Up * speed);
+    if(direction == TransformDirection::FORWARD)
+        m_position += (m_props.Front * speed);
+    if(direction == TransformDirection::BACKWARD)
+        m_position -= (m_props.Front * speed);
+
     UpdateViewMatrix();
 }

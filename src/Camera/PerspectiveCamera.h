@@ -1,3 +1,4 @@
+#pragma once
 #include "../Core.h"
 
 
@@ -44,6 +45,8 @@ class PerspectiveCamera {
         const glm::mat4& GetProjectionMatrix() const {return m_projectionMatrix;}
         const glm::mat4& GetViewMatrix() const {return m_viewMatrix;}
         const float& GetZoom() const {return m_props.Zoom;}
+        inline glm::vec3& GetPosition() {return m_position;}
+        inline glm::quat& GetRotation() {return m_quaternion;}
         // Setters
         void SetPosition(glm::vec3& position);
         // @param rotation_axis Specifies the desired axis around which the camera should rotate.
@@ -55,12 +58,14 @@ class PerspectiveCamera {
         // @param direction glm::vec3 that holds the direction of the movement/rotation.
         // @param speed_up A boolean which, if set to TRUE, will speed up camera movement.
         void HandleUserInput(TransformDirection direction, bool speed_up);
+
+    public:
     private:
         void UpdateViewMatrix();
         void UpdateProjectionMatrix();
         glm::mat4 m_projectionMatrix;
         glm::mat4 m_viewMatrix;
         glm::vec3 m_position;
-        glm::quat m_quarternion = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
+        glm::quat m_quaternion = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
         CameraProps m_props;
 };

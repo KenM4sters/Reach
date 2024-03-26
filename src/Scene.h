@@ -14,10 +14,13 @@ class Scene : public Layer {
         void OnDetach() override;
         void Update() override;
         void UpdateInterface() override;
+        void HandleUserInput();
     private:
         std::shared_ptr<VertexArray> vao = nullptr;
         std::shared_ptr<Shader> m_shader = nullptr;
         std::shared_ptr<Mesh> m_mesh = nullptr;
         std::shared_ptr<PerspectiveCamera> m_camera = nullptr;
+
+        GLFWwindow* m_window = nullptr;
 
 };
