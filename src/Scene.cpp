@@ -33,10 +33,11 @@ void Scene::OnAttach()
     // auto ebo = IndexBuffer::Create(square_indices, sizeof(square_indices));
     vao = static_cast<std::shared_ptr<VertexArray>>(VertexArray::Create(vbo));
 
-
-
     std::string name = "quad_shader";
     m_shader = static_cast<std::shared_ptr<Shader>>(new OpenGLShader(name, "src/Shaders/quad.vert", "src/Shaders/quad.frag"));
+    
+    m_mesh = std::make_shared<Mesh>(vao, new Material(m_shader), new TransformProps());
+
 }
 
 void Scene::OnDetach()  
@@ -49,7 +50,7 @@ void Scene::Update()
     Renderer::PrepareScene();
     m_shader->Use();
     m_shader->SetVec4f("uColor", glm::vec4(color.x, color.y, color.z, color.w));
-    Renderer::Submit(vao, m_shader);
+    Renderer::Submit(m_mesh);
 }
 
 void Scene::UpdateInterface()  

@@ -56,21 +56,21 @@ struct TransformProps {
 
 class Mesh : SceneObject {
     public:
-        Mesh(std::shared_ptr<VertexArray>& vertex_aray, TransformProps* transform_props);
+        Mesh(std::shared_ptr<VertexArray>& vertex_aray, Material* material, TransformProps* transform_props);
         ~Mesh() {}
 
         // Getters
         std::shared_ptr<VertexArray> GetVAO() const { return m_vertexArray; }
-        std::shared_ptr<Material> GetMaterial() const { return m_material; }
+        Material* GetMaterial() const { return m_material; }
         TransformProps* GetTransformProps() const { return m_transformProps; }
 
         // Setters
         void SetVAO(std::shared_ptr<VertexArray>& vertex_array) { m_vertexArray = vertex_array; }
-        void SetMaterial(std::shared_ptr<Material>& material) { m_material = material; }
+        void SetMaterial(Material*& material) { m_material = material; }
         void SetTransformProps(TransformProps* transform_props) { m_transformProps = transform_props; }
         
     private:
         std::shared_ptr<VertexArray> m_vertexArray;
-        std::shared_ptr<Material> m_material;
+        Material* m_material;
         TransformProps* m_transformProps;
 };
