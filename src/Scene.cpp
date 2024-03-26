@@ -2,7 +2,9 @@
 #include "Context/OpenGL/OpenGLShader.h"
 #include "Renderer/Renderer.h"
 #include "App.h"
+#include <ImGui/imgui.h>
 
+static ImVec4 color = ImVec4(1.0f, 0.5, 0.0f, 1.0f);
 
 Scene::Scene()
     : Layer("Scene")
@@ -43,10 +45,15 @@ void Scene::OnDetach()
 void Scene::Update()  
 {
     Renderer::PrepareScene();
+    m_shader->Use();
+    m_shader->SetVec4f("uColor", glm::vec4(color.x, color.y, color.z, color.w));
     Renderer::Submit(vao, m_shader);
 }
 
 void Scene::UpdateInterface()  
 {
-
+    if(ImGui::Button("Change Color")) 
+    {
+        color = ImVec4(0.4f, 0.8f, 1.0f, 1.0f);
+    }
 }
