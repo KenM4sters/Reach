@@ -30,6 +30,10 @@ void OpenGLRendererAPI::Flush()
 
 // Functions to draw graphics 
 //================================================================
+void OpenGLRendererAPI::Draw(const std::shared_ptr<VertexArray>& VAO) 
+{
+    glDrawArrays(GL_TRIANGLES, 0, VAO->GetVertexBuffer()->GetNumVertices());
+}
 void OpenGLRendererAPI::DrawIndexed(const std::shared_ptr<VertexArray>& VAO) 
 {
     glDrawElements(GL_TRIANGLES, VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);

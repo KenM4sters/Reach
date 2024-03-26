@@ -6,6 +6,8 @@
 OpenGLVertexBuffer::OpenGLVertexBuffer(std::vector<Vertex>& vertices, uint32_t size)
     : m_vertices(vertices)
 {
+    m_numVertices = (size / (sizeof(Vertex)));
+
     glGenBuffers(1, &m_VBO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBufferData(GL_ARRAY_BUFFER, size, vertices.data(), GL_STATIC_DRAW);

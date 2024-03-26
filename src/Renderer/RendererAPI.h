@@ -24,7 +24,7 @@ class RendererAPI {
         virtual void ListenToEvents() = 0; 
         virtual void SwapBuffers(GLFWwindow* window) = 0; 
         virtual void Flush() = 0;
-        
+        virtual void Draw(const std::shared_ptr<VertexArray>& VAO) = 0;
         virtual void DrawIndexed(const std::shared_ptr<VertexArray>& VAO) = 0;
     public:
         static API m_API; 

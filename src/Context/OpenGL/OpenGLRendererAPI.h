@@ -13,5 +13,6 @@ class OpenGLRendererAPI : public RendererAPI {
         void Flush() override;
         
         // Functions to draw graphics
+        void Draw(const std::shared_ptr<VertexArray>& VAO) override;
         void DrawIndexed(const std::shared_ptr<VertexArray>& VAO) override;
 };

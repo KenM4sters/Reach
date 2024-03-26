@@ -13,7 +13,9 @@
  * Example containers for rendering a square 
 */ 
 extern std::vector<float> square_vertices;
-extern uint32_t square_indices[6];  
+extern std::vector<float> cube_vertices;
+// extern uint32_t cube_indices[24]; 
+extern uint32_t square_indices[6]; 
 
 /**
  * Vertex Struct to hold important data for every vertex of model.

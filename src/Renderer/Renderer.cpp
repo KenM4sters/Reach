@@ -8,7 +8,10 @@ void Renderer::Submit(const std::shared_ptr<VertexArray>& VAO, std::shared_ptr<S
 {   
     VAO->Bind();
     shader->Use();
-    m_rendererAPI->DrawIndexed(VAO);
+    if(VAO->GetIndexBuffer())
+        m_rendererAPI->DrawIndexed(VAO);
+    else
+        m_rendererAPI->Draw(VAO);
     VAO->Unbind();
     shader->Release();
 }

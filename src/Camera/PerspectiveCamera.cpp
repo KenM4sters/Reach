@@ -14,9 +14,9 @@ void PerspectiveCamera::SetPosition(glm::vec3& position)
     UpdateViewMatrix();
 }
 
-void PerspectiveCamera::SetRotation(glm::vec3& quaternion) 
+void PerspectiveCamera::SetRotation(glm::vec3& rotation_axis, float angle) 
 {
-    m_quarternion = quaternion;
+    m_quarternion = glm::rotate(m_quarternion, glm::radians(angle), rotation_axis);
     UpdateViewMatrix();
 }
 

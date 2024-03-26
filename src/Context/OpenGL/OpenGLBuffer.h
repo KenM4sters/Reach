@@ -9,7 +9,7 @@ class OpenGLVertexBuffer : public VertexBuffer {
         virtual ~OpenGLVertexBuffer();
         virtual void Bind() const override;
         virtual void Unbind() const override;
-
+        virtual uint32_t GetNumVertices() const override {return m_numVertices;}
         std::vector<Vertex> GetVertices() const { return m_vertices;}
         uint32_t GetID() const { return m_VBO;}
     private:
