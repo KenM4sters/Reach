@@ -13,7 +13,7 @@ void LayerStack::PushLayer(Layer* layer) {
 
 void LayerStack::PushOverlay(Layer* layer) 
 {
-    m_layers.emplace_back(layer);
+    m_overlay = layer;
     layer->OnAttach();
 }
 

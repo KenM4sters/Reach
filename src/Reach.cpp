@@ -1,5 +1,6 @@
 #include "Core.h"
 #include "Interface/Interface.h"
+#include "Scene.h"
 #include "App.h"
 
 /**
@@ -12,7 +13,8 @@ class Reach : public App {
         Reach(std::string name, uint16_t w, uint16_t h)
             : App(name, w, h) 
         {
-            PushLayer(new InterfaceLayer());
+            PushLayer(new Scene());
+            PushOverlay(new Interface());
         }
         ~Reach() 
         {

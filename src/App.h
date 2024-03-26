@@ -20,16 +20,6 @@ class App {
 
             m_window = std::make_shared<Window>(app_name, w, h);
             m_layerStack = std::make_unique<LayerStack>();
-
-            std::vector<Vertex> vertices = MakeVertexFromFloat(square_vertices);
-            auto vbo = VertexBuffer::Create(vertices, vertices.size()*sizeof(Vertex));
-            auto ebo = IndexBuffer::Create(square_indices, sizeof(square_indices));
-            vao = static_cast<std::shared_ptr<VertexArray>>(VertexArray::Create(vbo, ebo));
-
-            std::string name = "quad_shader";
-            m_shader = static_cast<std::shared_ptr<Shader>>(new OpenGLShader(name, "src/Shaders/quad.vert", "src/Shaders/quad.frag"));
-
-
         }
         void Run(); 
 
@@ -41,7 +31,5 @@ class App {
         std::shared_ptr<Window> m_window = nullptr;
         std::unique_ptr<LayerStack> m_layerStack = nullptr;
         static App* s_instance;
-        std::shared_ptr<VertexArray> vao = nullptr;
-        std::shared_ptr<Shader> m_shader = nullptr;
         
 };

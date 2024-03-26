@@ -7,15 +7,21 @@ void App::Run()
     while(m_window->IsRunning())
     {
         m_window->PreRender();
-
-        Renderer::Submit(vao, m_shader);
-        
-        for(const auto& layer : *m_layerStack.get()) {
+                
+        for(const auto& layer : *m_layerStack.get()) 
+        {
             layer->Update();
         }
 
-        m_window->PostRender();
+        m_layerStack->GetOverlay()->Begin(); // Overlay is the interface in our case.
+        for(const auto& layer : *m_layerStack.get()) 
+        {
+            layer->UpdateInterface();
+        }
+        m_layerStack->GetOverlay()->End();
 
+
+        m_window->PostRender();
         ReachCore::Time::Update();
     }
 }

@@ -2,12 +2,12 @@
 #include "../App.h"
 
 
-InterfaceLayer::InterfaceLayer()
-    : Layer("InterfaceLayer")
+Interface::Interface()
+    : Layer("Interface")
 {
     
 }
-void InterfaceLayer::OnAttach() 
+void Interface::OnAttach() 
 {
     App& app = App::GetInstance();
     // Setup Dear ImGui context
@@ -26,7 +26,7 @@ void InterfaceLayer::OnAttach()
 
 }
 
-void InterfaceLayer::OnDetach() 
+void Interface::OnDetach() 
 {
     // Cleanup
     ImGui_ImplOpenGL3_Shutdown();
@@ -34,8 +34,8 @@ void InterfaceLayer::OnDetach()
     ImGui::DestroyContext();
 }
 
-void InterfaceLayer::Update() 
-{   
+void Interface::Begin() 
+{
     bool bShowDemoWindow = true;
     // Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
@@ -44,8 +44,19 @@ void InterfaceLayer::Update()
     ImGui::NewFrame();
     if (bShowDemoWindow)
         ImGui::ShowDemoWindow(&bShowDemoWindow);
-    ImGui::Begin("ImGui Scene Editor");  
+    ImGui::Begin("ImGui Scene Editor"); 
+
+} 
+
+void Interface::End() 
+{
     ImGui::End();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 } 
+
+
+void AddSceneObject(std::shared_ptr<SceneObject>& sceneObj) 
+{
+
+}
