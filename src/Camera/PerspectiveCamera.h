@@ -35,7 +35,7 @@ struct CameraProps {
     uint32_t window_width, window_height;
     glm::vec3 Right     = {1.0f, 0.0f, 0.0f};
     glm::vec3 Up        = {0.0f, 1.0f, 0.0f};
-    glm::vec3 Front     = {0.0f, 0.0f, 1.0f};
+    glm::vec3 Front     = {0.0f, 0.0f, -1.0f};
 };
 
 class PerspectiveCamera {

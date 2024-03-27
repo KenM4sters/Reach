@@ -22,7 +22,7 @@ void Scene::OnAttach()
     App& app = App::GetInstance();
     m_window = app.GetWindow()->GetNativeWindow();
 
-    glm::vec3 camera_pos = glm::vec3(0.0f, 0.0f, -3.0f);
+    glm::vec3 camera_pos = glm::vec3(0.0f, 0.0f, 3.0f);
     uint32_t window_width = app.GetWindow()->GetWindowProps().Width;
     uint32_t window_height = app.GetWindow()->GetWindowProps().Height;
     m_camera = std::make_shared<PerspectiveCamera>(camera_pos, window_width, window_height);
@@ -65,11 +65,11 @@ void Scene::UpdateInterface()
     ImGui::DragFloat3("Diffuse", (float*)(&m_mesh->GetMaterial()->GetProps()->Diffuse));
     ImGui::DragFloat3("Specular", (float*)(&m_mesh->GetMaterial()->GetProps()->Specular));
     ImGui::DragFloat("Shininess", (float*)(&m_mesh->GetMaterial()->GetProps()->Shininess));
-    ImGui::DragFloat("Position", (float*)(&m_mesh->GetTransformProps()->Translation));
+    ImGui::DragFloat3("MeshPosition", (float*)(&m_mesh->GetTransformProps()->Translation));
     ImGui::Text("Light");
     ImGui::ColorEdit4("AmbientColor", (float*)(&m_pointLight->GetLightProps()->AmbientColor));
     ImGui::DragFloat3("Intensity", (float*)(&m_pointLight->GetLightProps()->Intensity));
-    ImGui::DragFloat3("Position", (float*)(&m_pointLight->GetTransformProps()->Translation));
+    ImGui::DragFloat3("LightPosition", (float*)(&m_pointLight->GetTransformProps()->Translation));
 
 }
 

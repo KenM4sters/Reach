@@ -17,13 +17,30 @@ void Renderer::Submit(const std::shared_ptr<Mesh>& mesh)
     mesh->GetMaterial()->GetShader()->Release();
 }
 
+void Renderer::Submit(const std::shared_ptr<Model>& model) 
+{   
+    for(auto mesh : *model->GetMeshes()) {
+        mesh.GetMaterial()->GetShader()->Use();
+        mesh.GetVAO()->Bind();
+        m_rendererAPI->DrawIndexed(mesh.GetVAO());
+        mesh.GetVAO()->Unbind();
+        mesh.GetMaterial()->GetShader()->Release();
+    }
+}
+
 void Renderer::PrepareScene(std::shared_ptr<Mesh>& mesh, std::shared_ptr<PerspectiveCamera>* camera, Light* light) 
 {
     auto shader = mesh->GetMaterial()->GetShader();
+    auto mesh_transforms = mesh->GetTransformProps();
+    auto& mesh_model = mesh_transforms->ModelMatrix;
+    mesh_model = glm::mat4(1.0f);
+    mesh_model = glm::scale(mesh_model, mesh_transforms->Scale);
+    mesh_model = glm::translate(mesh_model, mesh_transforms->Translation);
+
     shader->Use();
     shader->SetMat4f("projection", camera->get()->GetProjectionMatrix());
     shader->SetMat4f("view", camera->get()->GetViewMatrix());
-    shader->SetMat4f("model", mesh->GetTransformProps()->ModelMatrix);
+    shader->SetMat4f("model", mesh_transforms->ModelMatrix);
 
     auto mesh_props = mesh->GetMaterial()->GetProps();
     auto point_light = dynamic_cast<PointLight*>(light);
@@ -54,8 +71,6 @@ void Renderer::PrepareScene(std::shared_ptr<Mesh>& mesh, std::shared_ptr<Perspec
     {
         textures[i]->Unbind(i);
     }
-
-
 }
 
 void Renderer::CreateScene() 

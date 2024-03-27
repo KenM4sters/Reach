@@ -66,9 +66,9 @@ void PerspectiveCamera::HandleUserInput(TransformDirection direction, bool speed
     // }
 
     if(direction == TransformDirection::LEFT)
-        m_position += (m_props.Right * speed);
-    if(direction == TransformDirection::RIGHT)
         m_position -= (m_props.Right * speed);
+    if(direction == TransformDirection::RIGHT)
+        m_position += (m_props.Right * speed);
     if(direction == TransformDirection::UP)
         m_position += (m_props.Up * speed);
     if(direction == TransformDirection::DOWN)
