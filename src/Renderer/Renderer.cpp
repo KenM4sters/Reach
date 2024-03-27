@@ -28,48 +28,48 @@ void Renderer::Submit(const std::shared_ptr<Model>& model)
     }
 }
 
-void Renderer::PrepareScene(std::shared_ptr<Mesh>& mesh, std::shared_ptr<PerspectiveCamera>* camera, Light* light) 
+void Renderer::PrepareScene(std::shared_ptr<Model>& model, std::shared_ptr<PerspectiveCamera>* camera, Light* light) 
 {
-    auto shader = mesh->GetMaterial()->GetShader();
-    auto mesh_transforms = mesh->GetTransformProps();
-    auto& mesh_model = mesh_transforms->ModelMatrix;
-    mesh_model = glm::mat4(1.0f);
-    mesh_model = glm::scale(mesh_model, mesh_transforms->Scale);
-    mesh_model = glm::translate(mesh_model, mesh_transforms->Translation);
+    uint16_t diffuse_count = 1;
+    uint16_t specular_count = 1;
+    uint16_t normal_count = 1;
+    uint16_t height_count = 1;
 
-    shader->Use();
-    shader->SetMat4f("projection", camera->get()->GetProjectionMatrix());
-    shader->SetMat4f("view", camera->get()->GetViewMatrix());
-    shader->SetMat4f("model", mesh_transforms->ModelMatrix);
-
-    auto mesh_props = mesh->GetMaterial()->GetProps();
-    auto point_light = dynamic_cast<PointLight*>(light);
-    auto light_props = point_light->GetLightProps();
-    auto transform_props = point_light->GetTransformProps();
-
-    auto textures = mesh_props->Textures;
-    // Mesh
-    shader->SetVec3f("material.Ambient",mesh_props->Ambient);
-    shader->SetVec3f("material.Diffuse",mesh_props->Diffuse);
-    shader->SetVec3f("material.Specular",mesh_props->Specular);
-    shader->SetFloat("material.Shininess",mesh_props->Shininess);
-    // Light
-    shader->SetVec3f("light.Position", transform_props->Translation);
-    shader->SetVec3f("light.Ambient",light_props->AmbientColor);
-    shader->SetFloat("light.Intensity",light_props->Intensity);
-    // Camera
-    shader->SetVec3f("CameraPos", camera->get()->GetPosition());
-
-    for(uint32_t i = 0; i < textures.size(); i++) 
+    for(auto mesh : *model->GetMeshes()) 
     {
-        textures[i]->Bind(i);
-        shader->SetInt("material." + textures[i]->GetName(), i);
-    }
-
-    shader->Release();
-    for(uint32_t i = 0; i < textures.size(); i++) 
-    {
-        textures[i]->Unbind(i);
+        auto& textures = mesh.GetMaterial()->GetProps()->Textures;
+        auto shader = mesh.GetMaterial()->GetShader();
+        for(uint32_t i = 0; i < textures.size(); i++) 
+        {
+            std::string tex_index;
+            std::string name = textures[i]->GetName();
+            if(name == "texture_diffuse") {
+                tex_index = std::to_string(diffuse_count++);
+            } else if(name == "texture_specular") {
+                tex_index = std::to_string(specular_count++);
+            } else if(name == "texture_normal") {
+                tex_index = std::to_string(normal_count++);
+            } else if(name == "texture_height") {
+                tex_index = std::to_string(height_count++);
+            }
+            shader->Use();
+            textures[i]->Bind(i);
+            shader->SetInt(name + tex_index, i);
+        };
+        // Camera props
+        shader->SetVec3f("CameraPos", camera->get()->GetPosition());
+        shader->SetMat4f("projection", camera->get()->GetProjectionMatrix());
+        shader->SetMat4f("view", camera->get()->GetViewMatrix());
+        // Light props
+        shader->SetVec3f("light.Position", light->GetTransformProps()->Translation);
+        shader->SetVec3f("light.AmbientColor", light->GetLightProps()->AmbientColor);
+        shader->SetFloat("light.Intensity", light->GetLightProps()->Intensity);
+        // Transform props
+        auto model_transforms = model->GetTransformProps();
+        model_transforms->ModelMatrix = glm::mat4(1.0f);
+        model_transforms->ModelMatrix = glm::translate(model_transforms->ModelMatrix, model_transforms->Translation);
+        mesh.SetTransformProps(model->GetTransformProps());
+        shader->SetMat4f("model", mesh.GetTransformProps()->ModelMatrix);
     }
 }
 

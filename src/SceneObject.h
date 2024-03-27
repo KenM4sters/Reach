@@ -24,9 +24,7 @@ class SceneObject {
         {
 
         }
-        ~SceneObject() {
-            delete m_transformProps;
-        }
+        ~SceneObject() {}
 
         // Getters
         const inline OBJECT_TYPE& GetObjectType() const { return m_objectType; }

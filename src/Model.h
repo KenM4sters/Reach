@@ -19,6 +19,7 @@ class Model : public SceneObject {
         std::vector<std::shared_ptr<Texture2D>> LoadModelTextures(aiMaterial* mat, aiTextureType type, std::string type_name);
         Material* LoadMaterial(aiMaterial* mat, std::shared_ptr<Shader>& shader);
 
+        inline TransformProps* GetTransformProps() {return m_transformProps;}
         inline const std::vector<Mesh>* GetMeshes() const {return &m_meshes;}
     private:
         Mesh ProcessModelMesh(aiMesh *mesh, const aiScene *scene);

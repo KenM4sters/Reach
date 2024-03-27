@@ -84,11 +84,13 @@ Mesh Model::ProcessModelMesh(aiMesh *mesh, const aiScene *scene) {
 
     // Next step it to finally create our mesh from our vertices, indices, and materials.
     Material* mat = LoadMaterial(material, m_shader);
-    VertexBuffer* vbo = VertexBuffer::Create(vertices, vertices.size());
-    IndexBuffer* ebo = IndexBuffer::Create(indices.data(), indices.size());
+    // Don't forget multiply the size of each container by the size of the type that it contains.
+    VertexBuffer* vbo = VertexBuffer::Create(vertices, vertices.size()*sizeof(Vertex));
+    IndexBuffer* ebo = IndexBuffer::Create(indices.data(), indices.size()*sizeof(float));
     auto vao = static_cast<std::shared_ptr<VertexArray>>(VertexArray::Create(vbo, ebo));
-    
-    return Mesh(vao, mat, new TransformProps(), OBJECT_TYPE::MODEL);
+
+    m_transformProps = new TransformProps();
+    return Mesh(vao, mat, m_transformProps, OBJECT_TYPE::MODEL);
 }
 
 std::vector<std::shared_ptr<Texture2D>> Model::LoadModelTextures(aiMaterial* mat, aiTextureType type, std::string type_name) {
@@ -105,7 +107,7 @@ std::vector<std::shared_ptr<Texture2D>> Model::LoadModelTextures(aiMaterial* mat
                     throw std::runtime_error("ERROR::VertexBuffer::Create() - Renderer::m_rendererAPI::API is currently set to VOID!");
                     break;
                 case API::OPEN_GL:
-                    texture = std::make_shared<OpenGLTexture2D>(OpenGLTexture2D(str_c, "", m_dir));
+                    texture = std::make_shared<OpenGLTexture2D>(OpenGLTexture2D(str_c, type_name.c_str(), m_dir));
                     break;
                 case API::VULKAN:
                     throw std::runtime_error("Error::VertexBuffer::Create() - RendererAPI::Vulkan is currently unavailabe.");

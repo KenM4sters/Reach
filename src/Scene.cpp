@@ -26,19 +26,12 @@ void Scene::OnAttach()
     uint32_t window_width = app.GetWindow()->GetWindowProps().Width;
     uint32_t window_height = app.GetWindow()->GetWindowProps().Height;
     m_camera = std::make_shared<PerspectiveCamera>(camera_pos, window_width, window_height);
+    std::string name = "model_shader";
+    m_shader = static_cast<std::shared_ptr<Shader>>(new OpenGLShader(name, "src/Shaders/model.vert", "src/Shaders/model.frag"));
+    // Model
+    auto model_transforms = new TransformProps();
+    m_model = std::make_shared<Model>("Assets/Models/backpack/backpack.obj", m_shader, OBJECT_TYPE::MODEL, model_transforms);
 
-    // Mesh
-    std::vector<Vertex> vertices = MakeVertexFromFloat(cube_vertices);
-    auto vbo = VertexBuffer::Create(vertices, vertices.size()*sizeof(Vertex));
-    // auto ebo = IndexBuffer::Create(square_indices, sizeof(square_indices));
-    vao = static_cast<std::shared_ptr<VertexArray>>(VertexArray::Create(vbo));
-    std::string name = "quad_shader";
-    m_shader = static_cast<std::shared_ptr<Shader>>(new OpenGLShader(name, "src/Shaders/quad.vert", "src/Shaders/quad.frag"));
-    auto mat = new Material(m_shader);
-    auto props = mat->GetProps();
-    auto tex = Texture2D::Create("Assets/Textures/sfiii.png", "test");
-    props->Textures.push_back(tex);
-    m_mesh = std::make_shared<Mesh>(vao, new Material(m_shader), new TransformProps());
 
     // Light
     m_pointLight = new PointLight(OBJECT_TYPE::LIGHT, new TransformProps(), new PointLightProps());
@@ -54,21 +47,17 @@ void Scene::Update()
 {
     HandleUserInput();
 
-    Renderer::PrepareScene(m_mesh, &m_camera, m_pointLight);
-    Renderer::Submit(m_mesh);
+    Renderer::PrepareScene(m_model, &m_camera, m_pointLight);
+    Renderer::Submit(m_model);
 }
 
 void Scene::UpdateInterface()  
 {
     ImGui::Text("Mesh");
-    ImGui::ColorEdit4("Color", (float*)(&m_mesh->GetMaterial()->GetProps()->Ambient));
-    ImGui::DragFloat3("Diffuse", (float*)(&m_mesh->GetMaterial()->GetProps()->Diffuse));
-    ImGui::DragFloat3("Specular", (float*)(&m_mesh->GetMaterial()->GetProps()->Specular));
-    ImGui::DragFloat("Shininess", (float*)(&m_mesh->GetMaterial()->GetProps()->Shininess));
-    ImGui::DragFloat3("MeshPosition", (float*)(&m_mesh->GetTransformProps()->Translation));
+    ImGui::DragFloat3("MeshPosition", (float*)(&m_model->GetTransformProps()->Translation));
     ImGui::Text("Light");
     ImGui::ColorEdit4("AmbientColor", (float*)(&m_pointLight->GetLightProps()->AmbientColor));
-    ImGui::DragFloat3("Intensity", (float*)(&m_pointLight->GetLightProps()->Intensity));
+    ImGui::DragFloat("Intensity", (float*)(&m_pointLight->GetLightProps()->Intensity));
     ImGui::DragFloat3("LightPosition", (float*)(&m_pointLight->GetTransformProps()->Translation));
 
 }
