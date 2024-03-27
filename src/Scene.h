@@ -5,6 +5,7 @@
 #include "Renderer/VertexArray.h"
 #include "Camera/PerspectiveCamera.h"
 #include "Mesh.h"
+#include "Light.h"
 
 class Scene : public Layer {
     public:
@@ -20,6 +21,7 @@ class Scene : public Layer {
         std::shared_ptr<Shader> m_shader = nullptr;
         std::shared_ptr<Mesh> m_mesh = nullptr;
         std::shared_ptr<PerspectiveCamera> m_camera = nullptr;
+        Light* m_pointLight = nullptr;
 
         GLFWwindow* m_window = nullptr;
 

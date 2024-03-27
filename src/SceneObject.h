@@ -20,9 +20,19 @@ class SceneObject {
         SceneObject(OBJECT_TYPE type, TransformProps* props)
             : m_objectType(type), m_transformProps(props) 
         {
-            
+
         }
-        virtual ~SceneObject() {}
+        ~SceneObject() {
+            delete m_transformProps;
+        }
+
+        // Getters
+        const inline OBJECT_TYPE& GetObjectType() const { return m_objectType; }
+        inline TransformProps* GetTransformProps() { return m_transformProps; }
+
+        // Setters
+        void SetObjectType(OBJECT_TYPE type) { m_objectType = type; }
+        void SetTransformProps(TransformProps* props) {m_transformProps = props;}
     protected:
         OBJECT_TYPE m_objectType;
         TransformProps* m_transformProps;

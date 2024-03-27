@@ -4,6 +4,7 @@
 #include "App.h"
 #include <ImGui/imgui.h>
 #include "Mesh.h"
+#include "Light.h"
 
 Scene::Scene()
     : Layer("Scene")
@@ -26,20 +27,22 @@ void Scene::OnAttach()
     uint32_t window_height = app.GetWindow()->GetWindowProps().Height;
     m_camera = std::make_shared<PerspectiveCamera>(camera_pos, window_width, window_height);
 
+    // Mesh
     std::vector<Vertex> vertices = MakeVertexFromFloat(cube_vertices);
     auto vbo = VertexBuffer::Create(vertices, vertices.size()*sizeof(Vertex));
     // auto ebo = IndexBuffer::Create(square_indices, sizeof(square_indices));
     vao = static_cast<std::shared_ptr<VertexArray>>(VertexArray::Create(vbo));
-
     std::string name = "quad_shader";
     m_shader = static_cast<std::shared_ptr<Shader>>(new OpenGLShader(name, "src/Shaders/quad.vert", "src/Shaders/quad.frag"));
     auto mat = new Material(m_shader);
     auto props = mat->GetProps();
     auto tex = Texture2D::Create("Assets/Textures/sfiii.png", "test");
     props->Textures.push_back(tex);
-
     m_mesh = std::make_shared<Mesh>(vao, new Material(m_shader), new TransformProps());
 
+    // Light
+    m_pointLight = new PointLight(OBJECT_TYPE::LIGHT, new TransformProps(), new PointLightProps());
+    m_pointLight->GetTransformProps()->Translation = glm::vec3(3.0f, 3.0f, 2.0f);
 }
 
 void Scene::OnDetach()  
@@ -51,13 +54,23 @@ void Scene::Update()
 {
     HandleUserInput();
 
-    Renderer::PrepareScene(m_mesh, &m_camera);
+    Renderer::PrepareScene(m_mesh, &m_camera, m_pointLight);
     Renderer::Submit(m_mesh);
 }
 
 void Scene::UpdateInterface()  
 {
+    ImGui::Text("Mesh");
     ImGui::ColorEdit4("Color", (float*)(&m_mesh->GetMaterial()->GetProps()->Ambient));
+    ImGui::DragFloat3("Diffuse", (float*)(&m_mesh->GetMaterial()->GetProps()->Diffuse));
+    ImGui::DragFloat3("Specular", (float*)(&m_mesh->GetMaterial()->GetProps()->Specular));
+    ImGui::DragFloat("Shininess", (float*)(&m_mesh->GetMaterial()->GetProps()->Shininess));
+    ImGui::DragFloat("Position", (float*)(&m_mesh->GetTransformProps()->Translation));
+    ImGui::Text("Light");
+    ImGui::ColorEdit4("AmbientColor", (float*)(&m_pointLight->GetLightProps()->AmbientColor));
+    ImGui::DragFloat3("Intensity", (float*)(&m_pointLight->GetLightProps()->Intensity));
+    ImGui::DragFloat3("Position", (float*)(&m_pointLight->GetTransformProps()->Translation));
+
 }
 
 void Scene::HandleUserInput() 

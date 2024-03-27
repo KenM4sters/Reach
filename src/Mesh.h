@@ -51,7 +51,6 @@ class Material {
 class Mesh : SceneObject {
     public:
         Mesh(std::shared_ptr<VertexArray>& vertex_aray, Material* material, TransformProps* transform_props, OBJECT_TYPE type = OBJECT_TYPE::MESH);
-        ~Mesh() {}
 
         // Getters
         inline std::shared_ptr<VertexArray> GetVAO() const { return m_vertexArray; }
@@ -60,7 +59,7 @@ class Mesh : SceneObject {
 
         // Setters
         void SetVAO(std::shared_ptr<VertexArray>& vertex_array) { m_vertexArray = vertex_array; }
-        void SetMaterial(Material*& material) { m_material = material; }
+        void SetMaterial(Material* material) { m_material = material; }
         void SetTransformProps(TransformProps* transform_props) { m_transformProps = transform_props; }
         
     private:
