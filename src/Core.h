@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <cassert>
+#include <map>
 
 /**
  * Example containers for rendering a square 
