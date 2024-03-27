@@ -48,13 +48,6 @@ class Material {
 
 };
 
-// Holds the transform properties of a Mesh.
-struct TransformProps {
-    glm::vec3 Translation   = glm::vec3(0.0f);
-    glm::quat Rotation      = glm::quat(glm::vec3(0.0f));
-    glm::mat4 ModelMatrix   = glm::mat4(1.0f);
-};
-
 class Mesh : SceneObject {
     public:
         Mesh(std::shared_ptr<VertexArray>& vertex_aray, Material* material, TransformProps* transform_props, OBJECT_TYPE type = OBJECT_TYPE::MESH);
@@ -73,5 +66,4 @@ class Mesh : SceneObject {
     private:
         std::shared_ptr<VertexArray> m_vertexArray;
         Material* m_material;
-        TransformProps* m_transformProps;
 };
