@@ -57,7 +57,7 @@ void Scene::UpdateInterface()
     ImGui::DragFloat3("MeshPosition", (float*)(&m_model->GetTransformProps()->Translation));
     ImGui::Text("Light");
     ImGui::ColorEdit4("AmbientColor", (float*)(&m_pointLight->GetLightProps()->AmbientColor));
-    ImGui::DragFloat("Intensity", (float*)(&m_pointLight->GetLightProps()->Intensity));
+    ImGui::DragFloat("Intensity", (float*)(&m_pointLight->GetLightProps()->Intensity), 0.01f);
     ImGui::DragFloat3("LightPosition", (float*)(&m_pointLight->GetTransformProps()->Translation));
 
 }

@@ -30,13 +30,12 @@ void Renderer::Submit(const std::shared_ptr<Model>& model)
 
 void Renderer::PrepareScene(std::shared_ptr<Model>& model, std::shared_ptr<PerspectiveCamera>* camera, Light* light) 
 {
-    uint16_t diffuse_count = 1;
-    uint16_t specular_count = 1;
-    uint16_t normal_count = 1;
-    uint16_t height_count = 1;
-
     for(auto mesh : *model->GetMeshes()) 
     {
+        uint16_t diffuse_count = 1;
+        uint16_t specular_count = 1;
+        uint16_t normal_count = 1;
+        uint16_t height_count = 1;
         auto& textures = mesh.GetMaterial()->GetProps()->Textures;
         auto shader = mesh.GetMaterial()->GetShader();
         for(uint32_t i = 0; i < textures.size(); i++) 

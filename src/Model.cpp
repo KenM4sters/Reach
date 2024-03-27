@@ -81,9 +81,10 @@ Mesh Model::ProcessModelMesh(aiMesh *mesh, const aiScene *scene) {
     // 4. height maps
     std::vector<std::shared_ptr<Texture2D>> heightMaps = LoadModelTextures(material, aiTextureType_AMBIENT, "texture_height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
-
+    
     // Next step it to finally create our mesh from our vertices, indices, and materials.
     Material* mat = LoadMaterial(material, m_shader);
+    mat->GetProps()->Textures = textures;
     // Don't forget multiply the size of each container by the size of the type that it contains.
     VertexBuffer* vbo = VertexBuffer::Create(vertices, vertices.size()*sizeof(Vertex));
     IndexBuffer* ebo = IndexBuffer::Create(indices.data(), indices.size()*sizeof(float));
