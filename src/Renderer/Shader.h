@@ -11,6 +11,7 @@ class Shader {
         virtual void Release() = 0; 
         virtual void LoadFromFile(const char* vert_src, const char* frag_src, const char* geo_src = nullptr) = 0;
         virtual void Compile(const char* v_shader, const char* f_shader, const char* g_shader = nullptr) = 0;
+        inline const std::string GetName() const { return m_debugName;}
 
         // Set Shader Uniforms
         //================================================================

@@ -10,7 +10,7 @@ class Renderer {
     public:
         static void Submit(const std::shared_ptr<Mesh>& mesh);
         static void Submit(const std::shared_ptr<Model>& model);
-        static void PrepareScene(std::shared_ptr<Model>& model, std::shared_ptr<PerspectiveCamera>* camera, Light* light);
+        static void PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>& models, std::shared_ptr<PerspectiveCamera>* camera, Light* light);
         static void CreateScene();
         static void EndScene();
     public:
