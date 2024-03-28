@@ -1,9 +1,21 @@
 #include "Renderer.h"
 #include "../Context/OpenGL/OpenGLRendererAPI.h"
 #include "../Context/OpenGL/OpenGLTexture.h"
+#include "../Context/OpenGL/OpenGLFramebuffer.h"
 
 // Out of class initializer for renderer api - OpenGL by default.
 RendererAPI* Renderer::m_rendererAPI = new OpenGLRendererAPI();
+
+void Renderer::Submit(const std::shared_ptr<Framebuffer>& fbo) 
+{
+    fbo->GetVertexArray()->Bind();
+    fbo->GetShader()->Use();
+    glBindTexture(GL_TEXTURE_2D, fbo->GetColorAttachmentID());
+    m_rendererAPI->DrawIndexed(fbo->GetVertexArray());
+    fbo->GetVertexArray()->Unbind();
+    fbo->GetShader()->Release();
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
 
 void Renderer::Submit(const std::shared_ptr<Mesh>& mesh) 
 {   

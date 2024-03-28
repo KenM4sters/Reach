@@ -4,7 +4,7 @@
 class Texture {
     public:
         Texture() {}
-        ~Texture() {}
+        virtual ~Texture() {}
         virtual inline std::string& GetName() = 0;
         virtual void Bind() = 0;
         virtual void Bind(uint32_t& count) = 0;
@@ -16,6 +16,7 @@ class Texture {
 
 class Texture2D : public Texture {
     public:
+        ~Texture2D() {}
         static std::shared_ptr<Texture2D> Create(const char* path, const char* name);
         inline std::string& GetName() override { return m_debugName; }
         virtual inline uint32_t GetWidth() {return m_width;}

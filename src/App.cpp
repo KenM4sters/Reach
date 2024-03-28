@@ -7,7 +7,9 @@ void App::Run()
     while(m_window->IsRunning())
     {
         m_window->PreRender();
-                
+        
+        glEnable(GL_DEPTH_TEST);
+        m_FBO->Bind();
         for(const auto& layer : *m_layerStack.get()) 
         {
             layer->Update();
@@ -19,7 +21,9 @@ void App::Run()
             layer->UpdateInterface();
         }
         m_layerStack->GetOverlay()->End();
-
+        
+        m_FBO->Unbind();
+        glDisable(GL_DEPTH_TEST);
 
         m_window->PostRender();
         ReachCore::Time::Update();

@@ -3,9 +3,7 @@
 #include "Core.h"
 #include "Window.h"
 #include "LayerStack.h"
-#include "Renderer/VertexArray.h"
-#include "Renderer/Shader.h"
-#include "Context/OpenGL/OpenGLShader.h"
+#include "Renderer/Framebuffer.h"
 
 /**
  * The App class is very simple and barebones - merely acts as an entry point to initiate 
@@ -20,6 +18,13 @@ class App {
 
             m_window = std::make_shared<Window>(app_name, w, h);
             m_layerStack = std::make_unique<LayerStack>();
+            
+            auto config = FramebufferConfig() = 
+            {
+                1, w, h
+            };
+            m_FBO = Framebuffer::Create(config, true);
+        
         }
         void Run(); 
 
@@ -30,6 +35,7 @@ class App {
     private:
         std::shared_ptr<Window> m_window = nullptr;
         std::unique_ptr<LayerStack> m_layerStack = nullptr;
+        std::shared_ptr<Framebuffer> m_FBO = nullptr;
         static App* s_instance;
         
 };
