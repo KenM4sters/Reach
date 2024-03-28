@@ -32,7 +32,7 @@ void main()
     vec3 ambient_shading = texture(texture_diffuse1, vUv).rgb * light.AmbientColor * light.Intensity;
     // Diffuse
     vec3 light_dir = normalize(light.Position - frag_pos);
-    vec3 normal_dir = normalize(normal);
+    vec3 normal_dir = normalize(texture(texture_normal1, vUv).rgb);
     float diffuse_angle = max(dot(normal_dir, light_dir), 0.0);
     vec3 diffuse_shading = texture(texture_diffuse1, vUv).rgb * diffuse_angle;
     // Specular

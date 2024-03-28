@@ -53,11 +53,12 @@ void Scene::Update()
 void Scene::UpdateInterface()  
 {
     ImGui::Text("Mesh");
-    ImGui::DragFloat3("MeshPosition", (float*)(&m_model->GetTransformProps()->Translation));
+    ImGui::DragFloat3("MeshPosition", (float*)(&m_model->GetTransformProps()->Translation), 0.01f);
+    ImGui::DragFloat3("MeshScale", (float*)(&m_model->GetTransformProps()->Scale), 0.01f);
     ImGui::Text("Light");
     ImGui::ColorEdit4("AmbientColor", (float*)(&m_pointLight->GetLightProps()->AmbientColor));
     ImGui::DragFloat("Intensity", (float*)(&m_pointLight->GetLightProps()->Intensity), 0.01f);
-    ImGui::DragFloat3("LightPosition", (float*)(&m_pointLight->GetTransformProps()->Translation));
+    ImGui::DragFloat3("LightPosition", (float*)(&m_pointLight->GetTransformProps()->Translation), 0.01f);
 
 }
 

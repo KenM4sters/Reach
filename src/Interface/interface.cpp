@@ -36,7 +36,7 @@ void Interface::OnDetach()
 
 void Interface::Begin() 
 {
-    bool bShowDemoWindow = true;
+    bool bShowDemoWindow = false;
     // Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();

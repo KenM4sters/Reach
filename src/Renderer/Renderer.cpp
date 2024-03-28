@@ -67,6 +67,7 @@ void Renderer::PrepareScene(std::shared_ptr<Model>& model, std::shared_ptr<Persp
         // Transform props
         auto model_transforms = model->GetTransformProps();
         model_transforms->ModelMatrix = glm::mat4(1.0f);
+        model_transforms->ModelMatrix = glm::scale(model_transforms->ModelMatrix, model_transforms->Scale);
         model_transforms->ModelMatrix = glm::translate(model_transforms->ModelMatrix, model_transforms->Translation);
         mesh.SetTransformProps(model->GetTransformProps());
         shader->SetMat4f("model", mesh.GetTransformProps()->ModelMatrix);
