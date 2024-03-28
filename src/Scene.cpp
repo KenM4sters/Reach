@@ -48,7 +48,6 @@ void Scene::Update()
     HandleUserInput();
 
     Renderer::PrepareScene(m_model, &m_camera, m_pointLight);
-    Renderer::Submit(m_model);
 }
 
 void Scene::UpdateInterface()  

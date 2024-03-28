@@ -11,7 +11,6 @@ class Texture {
         virtual void Unbind() = 0;
         virtual void Unbind(uint32_t& count) = 0;
     protected:
-        uint32_t m_ID;
         std::string m_debugName;
 };
 
@@ -25,7 +24,8 @@ class Texture2D : public Texture {
         void Bind(uint32_t& count) override;
         void Unbind() override;
         void Unbind(uint32_t& count) override;
-    protected:
+    protected:        
+        uint32_t m_ID;
         uint32_t m_width;
         uint32_t m_height;
 };

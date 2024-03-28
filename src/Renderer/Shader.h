@@ -27,6 +27,6 @@ class Shader {
 
         virtual void CheckCompilationErrors(unsigned int object, std::string type) = 0;
     protected:
-        uint32_t m_ID = 0;
+        uint32_t m_ID;
         std::string m_debugName; // Probably won't be necessary for core functionality.
 };

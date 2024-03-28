@@ -22,4 +22,5 @@ class OpenGLShader : public Shader {
         void SetVec4f(std::string name, const glm::vec4& value) override;
         void SetMat4f(std::string name, const glm::mat4& matrix) override;
         void CheckCompilationErrors(unsigned int object, std::string type) override;
+    private:
 };

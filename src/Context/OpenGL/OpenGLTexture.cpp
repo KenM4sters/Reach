@@ -15,13 +15,13 @@ OpenGLTexture2D::OpenGLTexture2D(const char* path, const char* name, std::string
     // For model loading, we take in a combintaion of a directory and a root file path,
     // so we'll first test if an image exists at that path first, and if it doesn't,
     // we'll just use the path.
+    glGenTextures(1, &m_ID); // Don't forget to generate an ID first!
     m_debugName = name;
     std::string filename = std::string(path);
     filename = dir + '/' + filename;
 
     int width, height, nrChannels;
     unsigned char *data = stbi_load(filename.c_str(), &width , &height, &nrChannels, 0);
-
     m_height = height;
     m_width = width;
 
@@ -39,6 +39,7 @@ OpenGLTexture2D::OpenGLTexture2D(const char* path, const char* name, std::string
         else if(nrChannels == 4)
             format = GL_RGBA;
 
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, this->m_ID);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -48,7 +49,8 @@ OpenGLTexture2D::OpenGLTexture2D(const char* path, const char* name, std::string
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        this->Unbind();
+        m_data = data;
+        glBindTexture(GL_TEXTURE_2D, 0);
         stbi_image_free(data);
     }
     else

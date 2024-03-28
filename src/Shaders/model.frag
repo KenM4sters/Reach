@@ -24,6 +24,7 @@ uniform vec3 CameraPos;
 
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
+uniform sampler2D texture_normal1;
 
 
 void main() 
@@ -40,10 +41,6 @@ void main()
     float specular_intensity = pow(max(dot(view_dir, crit_reflection), 0.0), 32.0);
     vec3 specular_shading = texture(texture_specular1, vUv).rgb * specular_intensity;
 
-    vec3 result = diffuse_shading;
+    vec3 result = ambient_shading + diffuse_shading + specular_shading;
     FragColor = vec4(result, 1.0);
-    // FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-
-
-
 }

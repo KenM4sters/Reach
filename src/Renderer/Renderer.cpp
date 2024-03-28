@@ -1,5 +1,6 @@
 #include "Renderer.h"
 #include "../Context/OpenGL/OpenGLRendererAPI.h"
+#include "../Context/OpenGL/OpenGLTexture.h"
 
 // Out of class initializer for renderer api - OpenGL by default.
 RendererAPI* Renderer::m_rendererAPI = new OpenGLRendererAPI();
@@ -38,8 +39,7 @@ void Renderer::PrepareScene(std::shared_ptr<Model>& model, std::shared_ptr<Persp
         uint16_t height_count = 1;
         auto& textures = mesh.GetMaterial()->GetProps()->Textures;
         auto shader = mesh.GetMaterial()->GetShader();
-        for(uint32_t i = 0; i < textures.size(); i++) 
-        {
+        for(uint32_t i = 0; i < textures.size(); i++) {
             std::string tex_index;
             std::string name = textures[i]->GetName();
             if(name == "texture_diffuse") {
@@ -55,6 +55,7 @@ void Renderer::PrepareScene(std::shared_ptr<Model>& model, std::shared_ptr<Persp
             textures[i]->Bind(i);
             shader->SetInt(name + tex_index, i);
         };
+
         // Camera props
         shader->SetVec3f("CameraPos", camera->get()->GetPosition());
         shader->SetMat4f("projection", camera->get()->GetProjectionMatrix());
@@ -69,6 +70,11 @@ void Renderer::PrepareScene(std::shared_ptr<Model>& model, std::shared_ptr<Persp
         model_transforms->ModelMatrix = glm::translate(model_transforms->ModelMatrix, model_transforms->Translation);
         mesh.SetTransformProps(model->GetTransformProps());
         shader->SetMat4f("model", mesh.GetTransformProps()->ModelMatrix);
+
+        const auto& ptr = std::make_shared<Mesh>(mesh);
+        Renderer::Submit(ptr);
+        glActiveTexture(GL_TEXTURE0);
+        shader->Release();
     }
 }
 

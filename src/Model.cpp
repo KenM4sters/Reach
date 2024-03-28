@@ -35,7 +35,6 @@ void Model::ProcessNode(aiNode *node, const aiScene *scene) {
 Mesh Model::ProcessModelMesh(aiMesh *mesh, const aiScene *scene) {
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
-    std::vector<std::shared_ptr<Texture2D>> textures;
     for(unsigned int i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;
         glm::vec3 p_vector;
@@ -68,23 +67,26 @@ Mesh Model::ProcessModelMesh(aiMesh *mesh, const aiScene *scene) {
             indices.push_back(face.mIndices[j]);
         }
     }
-
+    std::vector<std::shared_ptr<Texture2D>> textures;
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+    // Diffuse maps
     std::vector<std::shared_ptr<Texture2D>> diffuseMaps = LoadModelTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-    // 2. specular maps
+    // Specular maps
     std::vector<std::shared_ptr<Texture2D>> specularMaps = LoadModelTextures(material, aiTextureType_SPECULAR, "texture_specular");
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-    // 3. normal maps
+    // Normal maps
     std::vector<std::shared_ptr<Texture2D>> normalMaps = LoadModelTextures(material, aiTextureType_HEIGHT, "texture_normal");
     textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-    // 4. height maps
+    // Height maps
     std::vector<std::shared_ptr<Texture2D>> heightMaps = LoadModelTextures(material, aiTextureType_AMBIENT, "texture_height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
     
     // Next step it to finally create our mesh from our vertices, indices, and materials.
     Material* mat = LoadMaterial(material, m_shader);
-    mat->GetProps()->Textures = textures;
+    auto& mat_textures = mat->GetProps()->Textures;
+    mat_textures.insert(mat_textures.end(), textures.begin(), textures.end());
+
     // Don't forget multiply the size of each container by the size of the type that it contains.
     VertexBuffer* vbo = VertexBuffer::Create(vertices, vertices.size()*sizeof(Vertex));
     IndexBuffer* ebo = IndexBuffer::Create(indices.data(), indices.size()*sizeof(float));

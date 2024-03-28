@@ -33,7 +33,7 @@ void Texture2D::Bind(uint32_t& count)
 void Texture2D::Unbind() 
 {
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_ID);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Texture2D::Unbind(uint32_t& count) 
