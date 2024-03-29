@@ -18,15 +18,13 @@ void OpenGLFramebuffer::Create()
 {
     glGenFramebuffers(1, &m_ID);
     glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
-    // Color Attachment - we'll be sampling from this.
     glGenTextures(1, &m_colorAttachment);
     glBindTexture(GL_TEXTURE_2D, m_colorAttachment);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 2 * m_config.Width, 2* m_config.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 2 * m_config.Width, 2 * m_config.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colorAttachment, 0);
-    // Depth and Stencil attachment - we won't be sampling from this, so we can use the faster
-    // Renderbuffer type instead of a texture2D.
+
     glGenRenderbuffers(1, &m_depthStencilAttachment);
     glBindRenderbuffer(GL_RENDERBUFFER, m_depthStencilAttachment);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 2 * m_config.Width, 2 * m_config.Height);
@@ -36,8 +34,8 @@ void OpenGLFramebuffer::Create()
         std::cout << "ERROR::Failed to create frame buffer!" << std::endl;
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glBindRenderbuffer(GL_RENDERBUFFER,0);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    // glBindRenderbuffer(GL_RENDERBUFFER,0);
+    // glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void OpenGLFramebuffer::InitQuad() 
@@ -53,7 +51,7 @@ void OpenGLFramebuffer::InitQuad()
 }
 
 void OpenGLFramebuffer::Bind() 
-{
+{ 
     glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
 }
 

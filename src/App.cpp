@@ -6,10 +6,11 @@ void App::Run()
 {
     while(m_window->IsRunning())
     {
-        m_window->PreRender();
-        
-        glEnable(GL_DEPTH_TEST);
         m_FBO->Bind();
+        glEnable(GL_DEPTH_TEST);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         for(const auto& layer : *m_layerStack.get()) 
         {
             layer->Update();
@@ -21,10 +22,14 @@ void App::Run()
             layer->UpdateInterface();
         }
         m_layerStack->GetOverlay()->End();
-        
-        m_FBO->Unbind();
-        glDisable(GL_DEPTH_TEST);
 
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glDisable(GL_DEPTH_TEST);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        Renderer::Submit(m_FBO);
+        
         m_window->PostRender();
         ReachCore::Time::Update();
     }

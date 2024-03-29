@@ -7,7 +7,7 @@ class OpenGLFramebuffer : public Framebuffer {
         virtual ~OpenGLFramebuffer();
 
         const FramebufferConfig& GetConfig () const override { return m_config; }
-        uint32_t GetColorAttachmentID() const override { return m_colorAttachment; }
+        const uint32_t& GetColorAttachmentID() const override { return m_colorAttachment; }
         const std::shared_ptr<VertexArray> GetVertexArray() const override { return m_vertexArray;}
         const std::shared_ptr<Shader> GetShader() const override { return m_shader;}
         void Bind() override;

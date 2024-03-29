@@ -8,13 +8,16 @@ RendererAPI* Renderer::m_rendererAPI = new OpenGLRendererAPI();
 
 void Renderer::Submit(const std::shared_ptr<Framebuffer>& fbo) 
 {
-    fbo->GetVertexArray()->Bind();
     fbo->GetShader()->Use();
+    fbo->GetVertexArray()->Bind();
+
+    glActiveTexture(fbo->GetColorAttachmentID());
     glBindTexture(GL_TEXTURE_2D, fbo->GetColorAttachmentID());
+    std::cout << fbo->GetColorAttachmentID() << std::endl;
     m_rendererAPI->DrawIndexed(fbo->GetVertexArray());
+    
     fbo->GetVertexArray()->Unbind();
-    fbo->GetShader()->Release();
-    glBindTexture(GL_TEXTURE_2D, 0);
+    fbo->GetShader()->Release();  
 }
 
 void Renderer::Submit(const std::shared_ptr<Mesh>& mesh) 
