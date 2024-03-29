@@ -13,11 +13,11 @@ void Renderer::Submit(const std::shared_ptr<Framebuffer>& fbo)
 
     glActiveTexture(fbo->GetColorAttachmentID());
     glBindTexture(GL_TEXTURE_2D, fbo->GetColorAttachmentID());
-    std::cout << fbo->GetColorAttachmentID() << std::endl;
     m_rendererAPI->DrawIndexed(fbo->GetVertexArray());
     
     fbo->GetVertexArray()->Unbind();
     fbo->GetShader()->Release();  
+    // std::cout << fbo->GetColorAttachmentID() << std::endl;
 }
 
 void Renderer::Submit(const std::shared_ptr<Mesh>& mesh) 

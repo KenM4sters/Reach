@@ -22,6 +22,7 @@ struct WindowProps {
 class Window {
     public:
         Window(std::string name, uint16_t w, uint16_t h);
+        ~Window() {}
         void PreRender();
         void PostRender();
 

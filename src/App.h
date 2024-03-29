@@ -4,6 +4,7 @@
 #include "Window.h"
 #include "LayerStack.h"
 #include "Renderer/Framebuffer.h"
+#include "Context/OpenGL/OpenGLFramebuffer.h"
 
 /**
  * The App class is very simple and barebones - merely acts as an entry point to initiate 
@@ -23,7 +24,7 @@ class App {
             {
                 1, w, h
             };
-            m_FBO = Framebuffer::Create(config, true);
+            m_FBO = (Framebuffer::Create(config, true));
         
         }
         void Run(); 

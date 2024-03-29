@@ -11,7 +11,8 @@ OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferConfig& config, bool drawQ
 
 OpenGLFramebuffer::~OpenGLFramebuffer() 
 {
-    glDeleteFramebuffers(1, &m_ID);
+    // glDeleteFramebuffers(1, &m_ID);
+    std::cout << "deleted" << std::endl;
 }
 
 void OpenGLFramebuffer::Create() 
@@ -20,7 +21,7 @@ void OpenGLFramebuffer::Create()
     glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
     glGenTextures(1, &m_colorAttachment);
     glBindTexture(GL_TEXTURE_2D, m_colorAttachment);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 2 * m_config.Width, 2 * m_config.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2 * m_config.Width, 2 * m_config.Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colorAttachment, 0);
