@@ -23,7 +23,7 @@ void App::Run()
         }
         m_layerStack->GetOverlay()->End();
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        m_FBO->Unbind();
         glDisable(GL_DEPTH_TEST);
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);

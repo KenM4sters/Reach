@@ -11,8 +11,7 @@ OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferConfig& config, bool drawQ
 
 OpenGLFramebuffer::~OpenGLFramebuffer() 
 {
-    // glDeleteFramebuffers(1, &m_ID);
-    std::cout << "deleted" << std::endl;
+    glDeleteFramebuffers(1, &m_ID);
 }
 
 void OpenGLFramebuffer::Create() 

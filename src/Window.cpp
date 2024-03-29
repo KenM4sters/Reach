@@ -2,6 +2,7 @@
 #include "Renderer/Renderer.h"
 #include "Context/OpenGL/OpenGLContext.h"
 #include "Renderer/Buffer.h"
+#include "App.h"
 
 static void on_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     auto p_window = static_cast<Window*>(glfwGetWindowUserPointer(window));
@@ -48,6 +49,8 @@ static void on_mouse_move_callback(GLFWwindow* window, double pos_x, double pos_
 
 static void on_window_resize_callback(GLFWwindow* window, int width, int height) {
     auto p_window = static_cast<Window*>(glfwGetWindowUserPointer(window));
+    App& app = App::GetInstance();
+
 }
 
 static void on_window_close_callback(GLFWwindow* window) 
