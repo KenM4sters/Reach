@@ -2,7 +2,7 @@
 #include "../../Renderer/VertexArray.h"
 #include "OpenGLShader.h"
 
-OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferConfig& config, bool drawQuad)
+OpenGLFramebuffer::OpenGLFramebuffer(FramebufferConfig& config, bool drawQuad)
     : m_config(config)
 {
     Create();
@@ -58,6 +58,12 @@ void OpenGLFramebuffer::Bind()
 void OpenGLFramebuffer::Unbind() 
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void OpenGLFramebuffer::SetConfig(FramebufferConfig config) 
+{
+    m_config = config;
+    Create();
 }
 
 

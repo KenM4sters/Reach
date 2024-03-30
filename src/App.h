@@ -33,6 +33,7 @@ class App {
         void PushOverlay(Layer* layer);
         inline static App& GetInstance() {return *s_instance;}
         inline std::shared_ptr<Window>& GetWindow() {return m_window;} 
+        inline const std::shared_ptr<Framebuffer>& GetFrameBuffer() const {return m_FBO;}
     private:
         std::shared_ptr<Window> m_window = nullptr;
         std::unique_ptr<LayerStack> m_layerStack = nullptr;

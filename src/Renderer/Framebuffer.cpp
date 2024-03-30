@@ -3,7 +3,7 @@
 #include "../Context/OpenGL/OpenGLFramebuffer.h"
 
 
-std::shared_ptr<Framebuffer> Framebuffer::Create(const FramebufferConfig& config, bool drawQuad) 
+std::shared_ptr<Framebuffer> Framebuffer::Create(FramebufferConfig& config, bool drawQuad) 
 {
     switch(Renderer::m_rendererAPI->GetAPI()) 
     {
