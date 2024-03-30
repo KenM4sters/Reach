@@ -16,6 +16,8 @@ OpenGLFramebuffer::~OpenGLFramebuffer()
 
 void OpenGLFramebuffer::Create() 
 {
+    std::cout << "Width : " << m_config.Width << std::endl;
+    std::cout << "Height : " << m_config.Height << std::endl;
     glGenFramebuffers(1, &m_ID);
     glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
     glGenTextures(1, &m_colorAttachment);

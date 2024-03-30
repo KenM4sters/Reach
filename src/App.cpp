@@ -7,8 +7,7 @@ void App::Run()
     while(m_window->IsRunning())
     {
         m_FBO->Bind();
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        m_window->PreRender();
         glEnable(GL_DEPTH_TEST);
 
         for(const auto& layer : *m_layerStack.get()) 
@@ -25,12 +24,11 @@ void App::Run()
 
         m_FBO->Unbind();
         glDisable(GL_DEPTH_TEST);
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
 
+        m_window->PreRender();
         Renderer::Submit(m_FBO);
-        
         m_window->PostRender();
+        
         ReachCore::Time::Update();
     }
 }

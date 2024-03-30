@@ -31,7 +31,7 @@ class Window {
         inline void SetNativeWindow(GLFWwindow* window) {m_window = window;}
         inline bool IsRunning() const {return m_isRunning;}
         inline void SetStatus(bool status) {m_isRunning = status;}
-        inline void HandleResize(int w, int h);
+        void HandleResize(uint32_t w, uint32_t h); 
         inline WindowProps GetWindowProps() const {return m_windowProps;}
 
     private:

@@ -57,6 +57,7 @@ static void on_window_resize_callback(GLFWwindow* window, int width, int height)
         (uint32_t)height
     };
     app.GetFrameBuffer()->SetConfig(config);
+    p_window->HandleResize(width, height);
 
 }
 
@@ -129,7 +130,7 @@ void Window::PostRender()
     Renderer::m_rendererAPI->SwapBuffers(m_window);
 }
 
-inline void HandleResize(int w, int h) 
+void Window::HandleResize(uint32_t w, uint32_t h) 
 {
     Renderer::m_rendererAPI->SetViewportDimensions(w, h);
 }
