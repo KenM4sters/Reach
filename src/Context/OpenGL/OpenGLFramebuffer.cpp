@@ -16,13 +16,11 @@ OpenGLFramebuffer::~OpenGLFramebuffer()
 
 void OpenGLFramebuffer::Create() 
 {
-    // std::cout << "Width : " << m_config.Width << std::endl;
-    // std::cout << "Height : " << m_config.Height << std::endl;
     glGenFramebuffers(1, &m_ID);
     glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
     glGenTextures(1, &m_colorAttachment);
     glBindTexture(GL_TEXTURE_2D, m_colorAttachment);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2 * m_config.Width, 2 * m_config.Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 2 * m_config.Width, 2 * m_config.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colorAttachment, 0);
@@ -55,11 +53,13 @@ void OpenGLFramebuffer::InitQuad()
 void OpenGLFramebuffer::Bind() 
 { 
     glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
+    glEnable(GL_DEPTH_TEST);
 }
 
 void OpenGLFramebuffer::Unbind() 
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDisable(GL_DEPTH_TEST);
 }
 
 void OpenGLFramebuffer::SetConfig(FramebufferConfig config) 

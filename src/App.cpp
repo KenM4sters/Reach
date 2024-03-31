@@ -6,10 +6,10 @@ void App::Run()
 {
     while(m_window->IsRunning())
     {
-        m_FBO->Bind();
+        m_FBO->Bind(); // Binds our FBO and disables depth testing (since we'll only be rendering a 2D quad).
         m_window->PreRender();
-        glEnable(GL_DEPTH_TEST);
 
+        // Loops through each layer (Only the Scene for now).
         for(const auto& layer : *m_layerStack.get()) 
         {
             layer->Update();
@@ -23,13 +23,12 @@ void App::Run()
         m_layerStack->GetOverlay()->End();
 
         m_FBO->Unbind();
-        glDisable(GL_DEPTH_TEST);
 
-        m_window->PreRender();
-        Renderer::Submit(m_FBO);
+        m_window->PreRender(); 
+        Renderer::Submit(m_FBO); // Render the quad.
         m_window->PostRender();
         
-        ReachCore::Time::Update();
+        ReachCore::Time::Update(); // Useful for getting the time between frames.
     }
 }
 

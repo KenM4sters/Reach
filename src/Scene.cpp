@@ -36,6 +36,7 @@ void Scene::OnAttach()
     auto backpack_transforms = new TransformProps();
     auto backpack_model = std::make_shared<Model>("Assets/Models/backpack/backpack.obj", backpack_shader, OBJECT_TYPE::MODEL, backpack_transforms);
     backpack_model->GetTransformProps()->Scale = glm::vec3(0.25f);
+    backpack_model->GetTransformProps()->Translation = glm::vec3(-5.0f, 0.0f, 0.0f);
     m_models->push_back(backpack_model);
 
     // Sphere Model
@@ -43,13 +44,15 @@ void Scene::OnAttach()
     auto sphere_shader = static_cast<std::shared_ptr<Shader>>(new OpenGLShader(sphere_name, "src/Shaders/bare_model.vert", "src/Shaders/bare_model.frag"));
     auto sphere_transforms = new TransformProps();
     auto sphere_model = std::make_shared<Model>("Assets/Models/Sphere/sphere.obj", sphere_shader, OBJECT_TYPE::MODEL, sphere_transforms);
-    sphere_model->GetTransformProps()->Scale = glm::vec3(0.1f);
+    sphere_model->GetTransformProps()->Scale = glm::vec3(0.05f);
+    sphere_model->GetTransformProps()->Translation = glm::vec3(5.0f, 0.0f, 0.0f);
     m_models->push_back(sphere_model);
      
 
     // Light
     m_pointLight = new PointLight(OBJECT_TYPE::LIGHT, new TransformProps(), new PointLightProps());
     m_pointLight->GetTransformProps()->Translation = glm::vec3(3.0f, 3.0f, 2.0f);
+    m_pointLight->GetLightProps()->Intensity = 0.2f;
 }
 
 void Scene::OnDetach()  
