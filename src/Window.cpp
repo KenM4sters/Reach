@@ -50,11 +50,12 @@ static void on_mouse_move_callback(GLFWwindow* window, double pos_x, double pos_
 static void on_window_resize_callback(GLFWwindow* window, int width, int height) {
     auto p_window = static_cast<Window*>(glfwGetWindowUserPointer(window));
     App& app = App::GetInstance();
+    
     auto config = FramebufferConfig();
     config = {
         1, 
-        (uint32_t)width, 
-        (uint32_t)height
+        (uint32_t)width / 2, 
+        (uint32_t)height / 2
     };
     app.GetFrameBuffer()->SetConfig(config);
     p_window->HandleResize(width, height);

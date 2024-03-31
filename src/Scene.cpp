@@ -35,6 +35,7 @@ void Scene::OnAttach()
     auto backpack_shader = static_cast<std::shared_ptr<Shader>>(new OpenGLShader(backpack_name, "src/Shaders/textured_model.vert", "src/Shaders/textured_model.frag"));
     auto backpack_transforms = new TransformProps();
     auto backpack_model = std::make_shared<Model>("Assets/Models/backpack/backpack.obj", backpack_shader, OBJECT_TYPE::MODEL, backpack_transforms);
+    backpack_model->GetTransformProps()->Scale = glm::vec3(0.25f);
     m_models->push_back(backpack_model);
 
     // Sphere Model
