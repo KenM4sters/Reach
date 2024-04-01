@@ -130,14 +130,16 @@ Material* Model::LoadMaterial(aiMaterial* mat, std::shared_ptr<Shader> shader) {
     aiColor3D color;
     float temp;
 
-    mat->Get(AI_MATKEY_COLOR_AMBIENT, color);
-    material->GetProps()->Albedo = glm::vec3(color.r, color.b, color.g);
+    // mat->Get(AI_MATKEY_COLOR_AMBIENT, color);
+    // material->GetProps()->Albedo = glm::vec3(color.r, color.b, color.g);
 
-    mat->Get(AI_MATKEY_METALLIC_FACTOR, temp);
-    material->GetProps()->Metalness = temp;
+    // mat->Get(AI_MATKEY_METALLIC_FACTOR, temp);
+    // material->GetProps()->Metalness = temp;
 
-    mat->Get(AI_MATKEY_ROUGHNESS_FACTOR, temp);
-    material->GetProps()->Roughness = temp;
+    // mat->Get(AI_MATKEY_ROUGHNESS_FACTOR, temp);
+    // material->GetProps()->Roughness = temp;
+
+    // Ambient Occlusion ??
 
     /*
     * Blin-Phong Shading Properties

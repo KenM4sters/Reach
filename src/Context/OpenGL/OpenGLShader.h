@@ -5,6 +5,7 @@ class OpenGLShader : public Shader {
     public:
         OpenGLShader(std::string name, const char* vert_src, const char* frag_src, const char* geo_src = nullptr) 
         {
+            m_debugName = name;
             LoadFromFile(vert_src, frag_src, geo_src);
         }
         void Use() override;

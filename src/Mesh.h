@@ -19,8 +19,8 @@
 
 // Properties for PBR (Physically Based Rendering).
 struct MaterialProps {
-    glm::vec3 Albedo    = {0.4f, 0.4f, 0.4f};
-    float Metalness     = 0.1f;
+    glm::vec3 Albedo    = {0.8f, 0.8f, 0.8f};
+    float Metalness     = 0.2f;
     float Roughness     = 0.8f;
     float AO            = 0.2f;
     std::vector<std::shared_ptr<Texture2D>> Textures;

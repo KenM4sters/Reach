@@ -31,7 +31,7 @@ void Scene::OnAttach()
     m_models = std::make_shared<std::vector<std::shared_ptr<Model>>>();
 
     // Backpack Model
-    auto backpack_shader = Shader::Create("backpack_shader", "src/Shaders/textured_model.vert", "src/Shaders/textured_model.frag");
+    auto backpack_shader = Shader::Create("backpack_shader", "src/Shaders/PHONG_textured.vert", "src/Shaders/PHONG_textured.frag");
     auto backpack_model = std::make_shared<Model>(
         "Assets/Models/backpack/backpack.obj",
         OBJECT_TYPE::MODEL, 
@@ -40,9 +40,9 @@ void Scene::OnAttach()
     backpack_model->GetTransformProps()->Scale = glm::vec3(0.25f);
     backpack_model->GetTransformProps()->Translation = glm::vec3(-5.0f, 0.0f, 0.0f);
     m_models->push_back(backpack_model);
-
+    
     // Sphere Model
-    auto sphere_shader = Shader::Create("sphere_shader", "src/Shaders/bare_model.vert", "src/Shaders/bare_model.frag");
+    auto sphere_shader = Shader::Create("sphere_shader", "src/Shaders/PBR_bare.vert", "src/Shaders/PBR_bare.frag");
     auto sphere_model = std::make_shared<Model>(
         "Assets/Models/Sphere/sphere.obj", 
         OBJECT_TYPE::MODEL, 
@@ -86,13 +86,16 @@ void Scene::UpdateInterface()
         std::string Albedo = name + "Albedo";
         std::string metalness = name + "Metalness";
         std::string roughness = name + "Roughness";
+        std::string AO = name + "AO";
+        
         ImGui::Text(name.c_str());
         ImGui::DragFloat3(pos_name.c_str(), (float*)(&model->GetTransformProps()->Translation), 0.01f);
-        ImGui::DragFloat3(scale_name.c_str(), (float*)(&model->GetTransformProps()->Scale), 0.01f);
+        ImGui::DragFloat3(scale_name.c_str(), (float*)(&model->GetTransformProps()->Scale), 0.01f, 0.0f);
         ImGui::Text("Material");
-        ImGui::DragFloat3(Albedo.c_str(), (float*)(&model->GetMaterial()->GetProps()->Albedo), 0.01f);
-        ImGui::DragFloat(metalness.c_str(), (float*)(&model->GetMaterial()->GetProps()->Metalness), 0.01f);
-        ImGui::DragFloat(roughness.c_str(), (float*)(&model->GetMaterial()->GetProps()->Roughness), 0.01f);
+        ImGui::DragFloat3(Albedo.c_str(), (float*)(&model->GetMaterial()->GetProps()->Albedo), 0.01f, 1.0f);
+        ImGui::DragFloat(metalness.c_str(), (float*)(&model->GetMaterial()->GetProps()->Metalness), 0.01f, 0.0f, 1.0f);
+        ImGui::DragFloat(roughness.c_str(), (float*)(&model->GetMaterial()->GetProps()->Roughness), 0.01f, 0.0f, 1.0f);
+        ImGui::DragFloat(AO.c_str(), (float*)(&model->GetMaterial()->GetProps()->AO), 0.01f, 0.0f, 1.0f);
     }
 
 }
