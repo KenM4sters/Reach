@@ -3,7 +3,7 @@
 #include "../Context/OpenGL/OpenGLVertexArray.h"
 
 
-VertexArray* VertexArray::Create(VertexBuffer* vertex_buffer, IndexBuffer* index_buffer) 
+std::shared_ptr<VertexArray> VertexArray::Create(VertexBuffer* vertex_buffer, IndexBuffer* index_buffer) 
 {
     switch(RendererAPI::GetAPI()) 
     {
@@ -11,14 +11,14 @@ VertexArray* VertexArray::Create(VertexBuffer* vertex_buffer, IndexBuffer* index
             throw std::runtime_error("ERROR::VertexArray::Create() - RendererAPI is currently set to VOID!");
             break;
         case API::OPEN_GL:
-            return new OpenGLVertexArray(vertex_buffer, index_buffer);
+            return std::make_shared<OpenGLVertexArray>(vertex_buffer, index_buffer);
             break;
         case API::VULKAN:
             throw std::runtime_error("Error::VertexArray::Create() - RendererAPI::Vulkan is currently unavailabe.");
             break;
     }
 }
-VertexArray* VertexArray::Create(VertexBuffer* vertex_buffer) 
+std::shared_ptr<VertexArray> VertexArray::Create(VertexBuffer* vertex_buffer) 
 {
     switch(RendererAPI::GetAPI()) 
     {
@@ -26,7 +26,7 @@ VertexArray* VertexArray::Create(VertexBuffer* vertex_buffer)
             throw std::runtime_error("ERROR::VertexArray::Create() - RendererAPI is currently set to VOID!");
             break;
         case API::OPEN_GL:
-            return new OpenGLVertexArray(vertex_buffer);
+            return std::make_shared<OpenGLVertexArray>(vertex_buffer);
             break;
         case API::VULKAN:
             throw std::runtime_error("Error::VertexArray::Create() - RendererAPI::Vulkan is currently unavailabe.");

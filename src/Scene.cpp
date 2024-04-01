@@ -52,11 +52,33 @@ void Scene::OnAttach()
     sphere_model->GetTransformProps()->Translation = glm::vec3(5.0f, 0.0f, 0.0f);
     m_models->push_back(sphere_model);
      
-
     // Light
     m_pointLight = new PointLight(OBJECT_TYPE::LIGHT, new PointLightProps());
     m_pointLight->GetTransformProps()->Translation = glm::vec3(3.0f, 3.0f, 2.0f);
     m_pointLight->GetLightProps()->Intensity = 0.2f;
+
+    // Background
+    auto background_shader = Shader::Create("background_shader", "src/Shaders/Background.vert", "src/Shaders/Background.frag");
+    auto vertices = MakeVertexFromFloat(cube_vertices);
+    auto background_vao = VertexArray::Create(
+        VertexBuffer::Create(vertices, vertices.size()*sizeof(Vertex))
+    );
+    m_background = std::make_shared<Mesh>(
+        background_vao,
+        new Material(background_shader)
+    );
+    m_background->GetMaterial()->GetProps()->CubeTexture = CubeTexture::Create("Assets/Textures/ocean.hdr", "ocean_tex");
+    auto fbo_config = FramebufferConfig({
+        1,
+        512,
+        512
+    });
+    Renderer::PrepareBackground(
+        m_background, 
+        Framebuffer::Create(fbo_config, FramebufferType::SKELETON), 
+        Shader::Create("background_shader", "src/Shaders/Background.vert", "src/Shaders/Background.frag")
+    );
+    glViewport(0, 0, 1600, 1200); // PrepareBackground changes the viewport, so we need to reset it.
 }
 
 void Scene::OnDetach()  
@@ -67,7 +89,7 @@ void Scene::OnDetach()
 void Scene::Update()  
 {
     HandleUserInput();
-
+    Renderer::CreateBackground(m_background, m_camera);
     Renderer::PrepareScene(m_models, &m_camera, m_pointLight);
 }
 
@@ -84,7 +106,7 @@ void Scene::UpdateInterface()
         std::string pos_name = name + "Position";
         std::string scale_name = name + "Scale";
         std::string Albedo = name + "Albedo";
-        std::string metalness = name + "Metalness";
+        std::string Metallic = name + "Metallic";
         std::string roughness = name + "Roughness";
         std::string AO = name + "AO";
         
@@ -93,7 +115,7 @@ void Scene::UpdateInterface()
         ImGui::DragFloat3(scale_name.c_str(), (float*)(&model->GetTransformProps()->Scale), 0.01f, 0.0f);
         ImGui::Text("Material");
         ImGui::DragFloat3(Albedo.c_str(), (float*)(&model->GetMaterial()->GetProps()->Albedo), 0.01f, 1.0f);
-        ImGui::DragFloat(metalness.c_str(), (float*)(&model->GetMaterial()->GetProps()->Metalness), 0.01f, 0.0f, 1.0f);
+        ImGui::DragFloat(Metallic.c_str(), (float*)(&model->GetMaterial()->GetProps()->Metallic), 0.01f, 0.0f, 1.0f);
         ImGui::DragFloat(roughness.c_str(), (float*)(&model->GetMaterial()->GetProps()->Roughness), 0.01f, 0.0f, 1.0f);
         ImGui::DragFloat(AO.c_str(), (float*)(&model->GetMaterial()->GetProps()->AO), 0.01f, 0.0f, 1.0f);
     }

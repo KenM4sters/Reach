@@ -24,7 +24,7 @@ class App {
             {
                 1, w, h
             };
-            m_FBO = std::move(Framebuffer::Create(config, true));
+            m_FBO = std::move(Framebuffer::Create(config, FramebufferType::COLOR_STENCIL_DEPTH, true));
         
         }
         void Run(); 

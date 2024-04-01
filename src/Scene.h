@@ -18,10 +18,9 @@ class Scene : public Layer {
         void UpdateInterface() override;
         void HandleUserInput();
     private:
-        std::shared_ptr<std::vector<std::shared_ptr<Model>>> m_models; // I think it's time to typdef std::shared_ptr...
+        std::shared_ptr<std::vector<std::shared_ptr<Model>>> m_models; // I really should typdef std::shared_ptr.
         std::shared_ptr<PerspectiveCamera> m_camera = nullptr;
+        std::shared_ptr<Mesh> m_background = nullptr;
         Light* m_pointLight = nullptr;
-
         GLFWwindow* m_window = nullptr;
-
 };

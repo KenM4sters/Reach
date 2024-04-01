@@ -2,7 +2,7 @@
 
 struct Material {
     vec3 Albedo;
-    float Metalness;
+    float Metallic;
     float Roughness;
     float AO;
 };
@@ -47,7 +47,7 @@ void main()
     // BRDF
     //================================================================
     vec3 F0 = vec3(0.04);
-    F0 = mix(F0, material.Albedo, material.Metalness);
+    F0 = mix(F0, material.Albedo, material.Metallic);
     vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
 
     float NDF = DistributionGGX(N, H, material.Roughness);
@@ -59,7 +59,7 @@ void main()
 
     vec3 Ks = F;
     vec3 Kd = vec3(1.0) - F;
-    Kd *= 1.0 - material.Metalness;
+    Kd *= 1.0 - material.Metallic;
 
     float NdotL = max(dot(N, L), 0.0);        
     vec3 Lo = (Kd * material.Albedo / PI + specular) * radiance * NdotL;

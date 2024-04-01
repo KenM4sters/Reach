@@ -90,7 +90,7 @@ Mesh Model::ProcessModelMesh(aiMesh *mesh, const aiScene *scene) {
     // Don't forget multiply the size of each container by the size of the type that it contains.
     VertexBuffer* vbo = VertexBuffer::Create(vertices, vertices.size()*sizeof(Vertex));
     IndexBuffer* ebo = IndexBuffer::Create(indices.data(), indices.size()*sizeof(float));
-    auto vao = static_cast<std::shared_ptr<VertexArray>>(VertexArray::Create(vbo, ebo));
+    auto vao = VertexArray::Create(vbo, ebo);
 
     return Mesh(vao, mat, OBJECT_TYPE::MODEL);
 }
@@ -109,7 +109,7 @@ std::vector<std::shared_ptr<Texture2D>> Model::LoadModelTextures(aiMaterial* mat
                     throw std::runtime_error("ERROR::VertexBuffer::Create() - Renderer::m_rendererAPI::API is currently set to VOID!");
                     break;
                 case API::OPEN_GL:
-                    texture = std::make_shared<OpenGLTexture2D>(OpenGLTexture2D(str_c, type_name.c_str(), m_dir));
+                    texture = Texture2D::Create(str_c, type_name.c_str(), m_dir);
                     break;
                 case API::VULKAN:
                     throw std::runtime_error("Error::VertexBuffer::Create() - RendererAPI::Vulkan is currently unavailabe.");
@@ -134,7 +134,7 @@ Material* Model::LoadMaterial(aiMaterial* mat, std::shared_ptr<Shader> shader) {
     // material->GetProps()->Albedo = glm::vec3(color.r, color.b, color.g);
 
     // mat->Get(AI_MATKEY_METALLIC_FACTOR, temp);
-    // material->GetProps()->Metalness = temp;
+    // material->GetProps()->Metallic = temp;
 
     // mat->Get(AI_MATKEY_ROUGHNESS_FACTOR, temp);
     // material->GetProps()->Roughness = temp;

@@ -2,13 +2,23 @@
 #include "../../Renderer/VertexArray.h"
 #include "OpenGLShader.h"
 
-OpenGLFramebuffer::OpenGLFramebuffer(FramebufferConfig& config, bool drawQuad)
+OpenGLFramebuffer::OpenGLFramebuffer(FramebufferConfig& config, FramebufferType type, bool drawQuad)
     : m_config(config)
 {
-    Create();
+    switch(type) 
+    {
+        case FramebufferType::SKELETON:
+            CreateSkeleton();
+            break;
+        case FramebufferType::COLOR_STENCIL_DEPTH:
+            Create();
+            break;
+        case FramebufferType::COLOR:
+            break;
+    }
+
     if(drawQuad) InitQuad();
 }
-
 OpenGLFramebuffer::~OpenGLFramebuffer() 
 {
     glDeleteFramebuffers(1, &m_ID);
@@ -36,6 +46,17 @@ void OpenGLFramebuffer::Create()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindRenderbuffer(GL_RENDERBUFFER,0);
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void OpenGLFramebuffer::CreateSkeleton() 
+{
+    glGenFramebuffers(1, &m_ID);
+    glGenRenderbuffers(1, &m_depthStencilAttachment);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
+    glBindRenderbuffer(GL_RENDERBUFFER, m_depthStencilAttachment);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, m_config.Width, m_config.Height);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthStencilAttachment);
 }
 
 void OpenGLFramebuffer::InitQuad() 
@@ -67,6 +88,5 @@ void OpenGLFramebuffer::SetConfig(FramebufferConfig config)
     m_config = config;
     Create();
 }
-
 
 
