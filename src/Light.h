@@ -10,8 +10,8 @@ struct PointLightProps {
 
 class Light : public SceneObject {
     public:
-        Light(OBJECT_TYPE type, TransformProps* transform_props, PointLightProps* light_props)
-            : SceneObject(type, transform_props), m_lightProps(light_props) 
+        Light(OBJECT_TYPE type, PointLightProps* light_props)
+            : SceneObject(type), m_lightProps(light_props) 
         {}
         ~Light() {}
 
@@ -24,12 +24,10 @@ class Light : public SceneObject {
 
 class PointLight : public Light {
     public:
-        PointLight(OBJECT_TYPE type, TransformProps* transform_props, PointLightProps* light_props)
-            : Light(type, transform_props, light_props)
+        PointLight(OBJECT_TYPE type, PointLightProps* light_props)
+            : Light(type, light_props)
         {}
         ~PointLight() {
             delete m_lightProps;
         }
-    public:
-        uint32_t test;
 };

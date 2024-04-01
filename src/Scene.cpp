@@ -31,26 +31,30 @@ void Scene::OnAttach()
     m_models = std::make_shared<std::vector<std::shared_ptr<Model>>>();
 
     // Backpack Model
-    std::string backpack_name = "backpack_shader";
-    auto backpack_shader = static_cast<std::shared_ptr<Shader>>(new OpenGLShader(backpack_name, "src/Shaders/textured_model.vert", "src/Shaders/textured_model.frag"));
-    auto backpack_transforms = new TransformProps();
-    auto backpack_model = std::make_shared<Model>("Assets/Models/backpack/backpack.obj", backpack_shader, OBJECT_TYPE::MODEL, backpack_transforms);
+    auto backpack_shader = Shader::Create("backpack_shader", "src/Shaders/textured_model.vert", "src/Shaders/textured_model.frag");
+    auto backpack_model = std::make_shared<Model>(
+        "Assets/Models/backpack/backpack.obj",
+        OBJECT_TYPE::MODEL, 
+        new Material(backpack_shader)
+    );
     backpack_model->GetTransformProps()->Scale = glm::vec3(0.25f);
     backpack_model->GetTransformProps()->Translation = glm::vec3(-5.0f, 0.0f, 0.0f);
     m_models->push_back(backpack_model);
 
     // Sphere Model
-    std::string sphere_name = "sphere_shader";
-    auto sphere_shader = static_cast<std::shared_ptr<Shader>>(new OpenGLShader(sphere_name, "src/Shaders/bare_model.vert", "src/Shaders/bare_model.frag"));
-    auto sphere_transforms = new TransformProps();
-    auto sphere_model = std::make_shared<Model>("Assets/Models/Sphere/sphere.obj", sphere_shader, OBJECT_TYPE::MODEL, sphere_transforms);
+    auto sphere_shader = Shader::Create("sphere_shader", "src/Shaders/bare_model.vert", "src/Shaders/bare_model.frag");
+    auto sphere_model = std::make_shared<Model>(
+        "Assets/Models/Sphere/sphere.obj", 
+        OBJECT_TYPE::MODEL, 
+        new Material(sphere_shader)
+    );
     sphere_model->GetTransformProps()->Scale = glm::vec3(0.05f);
     sphere_model->GetTransformProps()->Translation = glm::vec3(5.0f, 0.0f, 0.0f);
     m_models->push_back(sphere_model);
      
 
     // Light
-    m_pointLight = new PointLight(OBJECT_TYPE::LIGHT, new TransformProps(), new PointLightProps());
+    m_pointLight = new PointLight(OBJECT_TYPE::LIGHT, new PointLightProps());
     m_pointLight->GetTransformProps()->Translation = glm::vec3(3.0f, 3.0f, 2.0f);
     m_pointLight->GetLightProps()->Intensity = 0.2f;
 }
@@ -79,9 +83,16 @@ void Scene::UpdateInterface()
         const std::string& name = model->GetName();
         std::string pos_name = name + "Position";
         std::string scale_name = name + "Scale";
+        std::string Albedo = name + "Albedo";
+        std::string metalness = name + "Metalness";
+        std::string roughness = name + "Roughness";
         ImGui::Text(name.c_str());
         ImGui::DragFloat3(pos_name.c_str(), (float*)(&model->GetTransformProps()->Translation), 0.01f);
         ImGui::DragFloat3(scale_name.c_str(), (float*)(&model->GetTransformProps()->Scale), 0.01f);
+        ImGui::Text("Material");
+        ImGui::DragFloat3(Albedo.c_str(), (float*)(&model->GetMaterial()->GetProps()->Albedo), 0.01f);
+        ImGui::DragFloat(metalness.c_str(), (float*)(&model->GetMaterial()->GetProps()->Metalness), 0.01f);
+        ImGui::DragFloat(roughness.c_str(), (float*)(&model->GetMaterial()->GetProps()->Roughness), 0.01f);
     }
 
 }

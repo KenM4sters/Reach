@@ -3,8 +3,7 @@
 
 class OpenGLShader : public Shader {
     public:
-        OpenGLShader(std::string& name, const char* vert_src, const char* frag_src, const char* geo_src = nullptr) 
-            : Shader(name, vert_src, frag_src, geo_src) 
+        OpenGLShader(std::string name, const char* vert_src, const char* frag_src, const char* geo_src = nullptr) 
         {
             LoadFromFile(vert_src, frag_src, geo_src);
         }

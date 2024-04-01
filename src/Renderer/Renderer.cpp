@@ -74,10 +74,9 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
             };
             // Material Props (not really needed if the model has textures, but definitiely needed if it doesn't).
             auto mat_props = mesh.GetMaterial()->GetProps();
-            shader->SetVec3f("material.Ambient", mat_props->Ambient);
-            shader->SetVec3f("material.Diffuse", mat_props->Diffuse);
-            shader->SetVec3f("material.Specular", mat_props->Specular);
-            shader->SetFloat("material.Shininess", mat_props->Shininess);
+            shader->SetVec3f("material.Albedo", mat_props->Albedo);
+            shader->SetFloat("material.Diffuse", mat_props->Metalness);
+            shader->SetFloat("material.Specular", mat_props->Roughness);
             // Camera props
             shader->SetVec3f("CameraPos", camera->get()->GetPosition());
             shader->SetMat4f("projection", camera->get()->GetProjectionMatrix());

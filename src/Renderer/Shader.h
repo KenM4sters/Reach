@@ -3,10 +3,6 @@
 
 class Shader {
     public:
-        Shader(std::string& name, const char* vert_src, const char* frag_src, const char* geo_src = nullptr)
-            : m_debugName(name)
-        {
-        }
         ~Shader() { glDeleteProgram(m_ID); }
         virtual void Use() = 0; 
         virtual void Release() = 0; 
@@ -28,6 +24,7 @@ class Shader {
         //================================================================
 
         virtual void CheckCompilationErrors(unsigned int object, std::string type) = 0;
+        static std::shared_ptr<Shader> Create(std::string name, const char* vert_src, const char* frag_src, const char* geo_src = nullptr);
     protected:
         uint32_t m_ID;
         std::string m_debugName; // Probably won't be necessary for core functionality.

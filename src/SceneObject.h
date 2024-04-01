@@ -19,10 +19,10 @@ struct TransformProps {
 
 class SceneObject {
     public:
-        SceneObject(OBJECT_TYPE type, TransformProps* props)
-            : m_objectType(type), m_transformProps(props) 
+        SceneObject(OBJECT_TYPE type)
+            : m_objectType(type) 
         {
-
+            m_transformProps = new TransformProps();
         }
         ~SceneObject() {}
 

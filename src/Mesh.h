@@ -17,12 +17,12 @@
  * the properties of a material into a seperate Struct. 
 */
 
-// Phong-Shading model for now - will eventualy be PBR.
+// Properties for PBR (Physically Based Rendering).
 struct MaterialProps {
-    glm::vec3 Ambient   = {0.4f, 0.4f, 0.4f};
-    glm::vec3 Diffuse   = {0.8f, 0.8f, 0.8f};
-    glm::vec3 Specular  = {0.2f, 0.2f, 0.2f};
-    float Shininess     = 8.0f;
+    glm::vec3 Albedo    = {0.4f, 0.4f, 0.4f};
+    float Metalness     = 0.1f;
+    float Roughness     = 0.8f;
+    float AO            = 0.2f;
     std::vector<std::shared_ptr<Texture2D>> Textures;
 };
 
@@ -35,7 +35,7 @@ class Material {
         }
         
         // Getters
-        inline std::shared_ptr<Shader> GetShader() const { return m_shader;}
+        inline std::shared_ptr<Shader> GetShader() { return m_shader;}
         inline MaterialProps* GetProps() { return &m_props; }
 
         // Setters
@@ -50,7 +50,7 @@ class Material {
 
 class Mesh : SceneObject {
     public:
-        Mesh(std::shared_ptr<VertexArray>& vertex_aray, Material* material, TransformProps* transform_props, OBJECT_TYPE type = OBJECT_TYPE::MESH);
+        Mesh(std::shared_ptr<VertexArray>& vertex_aray, Material* material, OBJECT_TYPE type = OBJECT_TYPE::MESH);
 
         // Getters
         inline std::shared_ptr<VertexArray> GetVAO() const { return m_vertexArray; }

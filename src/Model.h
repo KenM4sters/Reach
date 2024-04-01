@@ -8,30 +8,34 @@
 
 class Model : public SceneObject {
     public:
-        Model(const std::string &path, std::shared_ptr<Shader>& shader, OBJECT_TYPE type, TransformProps* transform_props) 
-            : SceneObject(type, transform_props), m_shader(shader) 
+        Model(const std::string &path, OBJECT_TYPE type, Material* mat) 
+            : SceneObject(type), m_material(mat) 
         {
-            m_name = shader->GetName().substr(0, shader->GetName().find_first_of("_")); // Removes "_shader" from name - looks ugly on the interface.
+            auto shader_name = m_material->GetShader()->GetName();   
+            m_name = shader_name.substr(0, shader_name.find_first_of("_")); // Removes "_shader" from name - looks ugly on the interface.
             LoadModel(path);
         }
         ~Model() { std::cout << "Model has been destroyed" << std::endl; }
         
         void LoadModel(const std::string& path);
-        std::vector<std::shared_ptr<Texture2D>> LoadModelTextures(aiMaterial* mat, aiTextureType type, std::string type_name);
-        Material* LoadMaterial(aiMaterial* mat, std::shared_ptr<Shader>& shader);
 
+        // Getters
         inline TransformProps* GetTransformProps() {return m_transformProps;}
         inline const std::vector<Mesh>* GetMeshes() const {return &m_meshes;}
-        const std::string GetName() const {return m_name;}
+        inline const std::string GetName() const {return m_name;}
+        inline Material* GetMaterial() {return m_material;}
+
     private:
         Mesh ProcessModelMesh(aiMesh *mesh, const aiScene *scene);
         void ProcessNode(aiNode *node, const aiScene *scene);
+        std::vector<std::shared_ptr<Texture2D>> LoadModelTextures(aiMaterial* mat, aiTextureType type, std::string type_name);
+        Material* LoadMaterial(aiMaterial* mat, std::shared_ptr<Shader> shader);
     private:
-        std::shared_ptr<Shader> m_shader = nullptr;
-        API m_selectedAPI = API::OPEN_GL;
+        Material* m_material = nullptr;
         TransformProps* m_transforms = nullptr;
-        std::string m_name;
+        std::string m_name = "";
 
+        API m_selectedAPI = API::OPEN_GL;
         std::vector<Mesh> m_meshes;
         std::unordered_map<std::string, std::shared_ptr<Texture2D>> m_textures_loaded;
         std::string m_dir = "";

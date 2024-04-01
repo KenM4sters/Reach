@@ -83,7 +83,7 @@ Mesh Model::ProcessModelMesh(aiMesh *mesh, const aiScene *scene) {
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
     
     // Next step it to finally create our mesh from our vertices, indices, and materials.
-    Material* mat = LoadMaterial(material, m_shader);
+    Material* mat = LoadMaterial(material, m_material->GetShader());
     auto& mat_textures = mat->GetProps()->Textures;
     mat_textures.insert(mat_textures.end(), textures.begin(), textures.end());
 
@@ -92,8 +92,7 @@ Mesh Model::ProcessModelMesh(aiMesh *mesh, const aiScene *scene) {
     IndexBuffer* ebo = IndexBuffer::Create(indices.data(), indices.size()*sizeof(float));
     auto vao = static_cast<std::shared_ptr<VertexArray>>(VertexArray::Create(vbo, ebo));
 
-    m_transformProps = new TransformProps();
-    return Mesh(vao, mat, m_transformProps, OBJECT_TYPE::MODEL);
+    return Mesh(vao, mat, OBJECT_TYPE::MODEL);
 }
 
 std::vector<std::shared_ptr<Texture2D>> Model::LoadModelTextures(aiMaterial* mat, aiTextureType type, std::string type_name) {
@@ -126,15 +125,27 @@ std::vector<std::shared_ptr<Texture2D>> Model::LoadModelTextures(aiMaterial* mat
 }
 
 
-Material* Model::LoadMaterial(aiMaterial* mat, std::shared_ptr<Shader>& shader) {
+Material* Model::LoadMaterial(aiMaterial* mat, std::shared_ptr<Shader> shader) {
     auto material = new Material(shader);
-    aiColor3D color(0.f, 0.f, 0.f);
-    float shininess;
+    aiColor3D color;
+    float temp;
 
+    mat->Get(AI_MATKEY_COLOR_AMBIENT, color);
+    material->GetProps()->Albedo = glm::vec3(color.r, color.b, color.g);
+
+    mat->Get(AI_MATKEY_METALLIC_FACTOR, temp);
+    material->GetProps()->Metalness = temp;
+
+    mat->Get(AI_MATKEY_ROUGHNESS_FACTOR, temp);
+    material->GetProps()->Roughness = temp;
+
+    /*
+    * Blin-Phong Shading Properties
+    ================================================================
     mat->Get(AI_MATKEY_COLOR_DIFFUSE, color);
     material->GetProps()->Diffuse = glm::vec3(color.r, color.b, color.g);
 
-    mat->Get(AI_MATKEY_COLOR_AMBIENT, color);
+    mat->Get(AI_MATKEY_COLOR_AMBIENT, color); 
     material->GetProps()->Ambient = glm::vec3(color.r, color.b, color.g);
 
     mat->Get(AI_MATKEY_COLOR_SPECULAR, color);
@@ -142,6 +153,9 @@ Material* Model::LoadMaterial(aiMaterial* mat, std::shared_ptr<Shader>& shader) 
 
     mat->Get(AI_MATKEY_SHININESS, shininess);
     material->GetProps()->Shininess = shininess;
+    ================================================================
+    */
+    
 
     return material;
 }
