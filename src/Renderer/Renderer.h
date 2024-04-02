@@ -13,7 +13,7 @@ class Renderer {
         static void Submit(const std::shared_ptr<Model>& model);
         static void Submit(const std::shared_ptr<Framebuffer>& fbo);
         static void PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>& models, std::shared_ptr<PerspectiveCamera>* camera, Light* light);
-        static void PrepareBackground(std::shared_ptr<Mesh> mesh, std::shared_ptr<Framebuffer> FBO, std::shared_ptr<Shader> eqToCubeShader);
+        static void PrepareBackground(std::shared_ptr<Mesh> mesh, std::shared_ptr<Framebuffer> FBO, std::shared_ptr<Shader> eqToCubeShader, std::shared_ptr<CubeTexture> convolutedTex);
         static void CreateBackground(std::shared_ptr<Mesh> mesh, std::shared_ptr<Framebuffer> FBO, std::shared_ptr<PerspectiveCamera> camera);
         // May end up seperating the scene render into 3 parts.
         static void CreateScene(); 

@@ -22,7 +22,9 @@ class Scene : public Layer {
         std::shared_ptr<std::vector<std::shared_ptr<Model>>> m_models; // I really should typdef std::shared_ptr.
         std::shared_ptr<PerspectiveCamera> m_camera = nullptr;
         std::shared_ptr<Mesh> m_background = nullptr;
+        std::shared_ptr<Mesh> m_convolutedBackground = nullptr;
         std::shared_ptr<Framebuffer> m_backgroundFBO = nullptr;
+        std::shared_ptr<Framebuffer> m_convolutedBackgroundFBO = nullptr;
         Light* m_pointLight = nullptr;
         GLFWwindow* m_window = nullptr;
 };

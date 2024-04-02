@@ -25,4 +25,5 @@ class OpenGLFramebuffer : public Framebuffer {
         FramebufferConfig m_config;
         std::shared_ptr<VertexArray> m_vertexArray = nullptr;
         std::shared_ptr<Shader> m_shader = nullptr;
+        FramebufferType m_type;
 };

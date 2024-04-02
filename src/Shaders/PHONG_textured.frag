@@ -29,7 +29,7 @@ uniform sampler2D texture_normal1;
 
 void main() 
 {
-    vec3 ambient_shading = texture(texture_diffuse1, vUv).rgb * light.AmbientColor * min(light.Intensity, 2.0);
+    vec3 ambient_shading = texture(texture_diffuse1, vUv).rgb * light.AmbientColor * min(light.Intensity, 1.0);
     // Diffuse
     vec3 light_dir = normalize(light.Position - frag_pos);
     vec3 normal_dir = normalize(texture(texture_normal1, vUv).rgb);

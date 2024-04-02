@@ -56,6 +56,7 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
             uint16_t normal_count = 1;
             uint16_t height_count = 1;
             auto& textures = mesh.GetMaterial()->GetProps()->Textures;
+            auto& cube_texture = model->GetMaterial()->GetProps()->CubeTexture;
             auto shader = mesh.GetMaterial()->GetShader();
             for(uint32_t i = 0; i < textures.size(); i++) {
                 std::string tex_index;
@@ -68,11 +69,17 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
                     tex_index = std::to_string(normal_count++);
                 } else if(name == "texture_height") {
                     tex_index = std::to_string(height_count++);
+                } else {
+                    tex_index = "";
                 }
                 shader->Use();
                 textures[i]->Bind(i);
                 shader->SetInt(name + tex_index, i);
             };
+            // Add the environemt map.
+            cube_texture->Bind();
+            shader->SetInt("env_map", textures.size());
+
             // Material Props (not really needed if the model has textures, but definitiely needed if it doesn't).
             auto mat_props = mesh.GetMaterial()->GetProps();
             auto model_props = model->GetMaterial()->GetProps();
@@ -105,13 +112,16 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
             Renderer::Submit(ptr);
             // Cleanup.
             glActiveTexture(GL_TEXTURE0);
+            cube_texture->Unbind();
             shader->Release();
         }
     }
 }
 
-void Renderer::PrepareBackground(std::shared_ptr<Mesh> mesh, std::shared_ptr<Framebuffer> FBO, std::shared_ptr<Shader> eqToCubeShader) 
+void Renderer::PrepareBackground(std::shared_ptr<Mesh> mesh, std::shared_ptr<Framebuffer> FBO, std::shared_ptr<Shader> eqToCubeShader, std::shared_ptr<CubeTexture> convolutedTex) 
 {
+
+    auto convolutionShader = Shader::Create("convolutionShader", "src/Shaders/Convolution.vert", "src/Shaders/Convolution.frag");
     auto cube_tex = mesh->GetMaterial()->GetProps()->CubeTexture;
     auto hdri_tex = mesh->GetMaterial()->GetProps()->Textures[0];
 
@@ -152,6 +162,41 @@ void Renderer::PrepareBackground(std::shared_ptr<Mesh> mesh, std::shared_ptr<Fra
     }
     glBindBuffer(GL_FRAMEBUFFER, 0);
     hdri_tex->Unbind();
+    eqToCubeShader->Release();
+    cube_tex->Unbind();
+
+
+    // Convolute the cube map
+    auto convolution_config = FramebufferConfig({1, 32, 32});
+    FBO->SetConfig(convolution_config);
+
+    convolutionShader->Use();
+    convolutionShader->SetInt("environmentMap", 0);
+    convolutionShader->SetMat4f("projection", captureProjection);
+    glViewport(0, 0, 32, 32); // don't forget to configure the viewport to the capture dimensions.
+    FBO->Bind();
+    cube_tex->Bind();
+    for (unsigned int i = 0; i < 6; ++i)
+    {
+        convolutionShader->SetMat4f("view", captureViews[i]);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+                            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, convolutedTex->GetID(), 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        const auto& VAO = mesh->GetVAO();
+        VAO->Bind();
+        if(VAO->GetIndexBuffer())
+            m_rendererAPI->DrawIndexed(VAO);
+        else
+            m_rendererAPI->Draw(VAO);
+        VAO->Unbind();
+    }
+    glBindBuffer(GL_FRAMEBUFFER, 0);
+    cube_tex->Unbind();
+    convolutionShader->Release();
+
+    // Optional - Convulted texture can look pretty cool if you don't want an obvious background.
+    // mesh->GetMaterial()->GetProps()->CubeTexture = convolutedTex;
 
 }
 

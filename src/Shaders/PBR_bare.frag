@@ -22,6 +22,7 @@ uniform vec4 uColor;
 uniform Light light;
 uniform Material material;
 uniform vec3 CameraPos;
+uniform samplerCube env_map;
 
 const float PI = 3.14159265359;
 float DistributionGGX(vec3 N, vec3 H, float roughness);
@@ -64,7 +65,9 @@ void main()
     float NdotL = max(dot(N, L), 0.0);        
     vec3 Lo = (Kd * material.Albedo / PI + specular) * radiance * NdotL;
 
-    vec3 ambient = vec3(0.03) * material.Albedo * material.AO;
+    vec3 irradiance = texture(env_map, N).rgb;
+    vec3 diffuse = irradiance * material.Albedo;
+    vec3 ambient = Kd * diffuse * material.AO;
     vec3 color = ambient + Lo;
 
     // HDRI

@@ -3,7 +3,7 @@
 #include "OpenGLShader.h"
 
 OpenGLFramebuffer::OpenGLFramebuffer(FramebufferConfig& config, FramebufferType type, bool drawQuad)
-    : m_config(config)
+    : m_config(config), m_type(type)
 {
     switch(type) 
     {
@@ -55,7 +55,7 @@ void OpenGLFramebuffer::CreateSkeleton()
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
     glBindRenderbuffer(GL_RENDERBUFFER, m_depthStencilAttachment);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, m_config.Width, m_config.Height);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 2 * m_config.Width, 2 * m_config.Height);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthStencilAttachment);
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         std::cout << "ERROR::Failed to create frame buffer!" << std::endl;
@@ -89,7 +89,17 @@ void OpenGLFramebuffer::Unbind()
 void OpenGLFramebuffer::SetConfig(FramebufferConfig config) 
 {
     m_config = config;
-    Create();
+    switch(m_type) 
+    {
+        case FramebufferType::SKELETON:
+            CreateSkeleton();
+            break;
+        case FramebufferType::COLOR_STENCIL_DEPTH:
+            Create();
+            break;
+        case FramebufferType::COLOR:
+            break;
+    }
 }
 
 
