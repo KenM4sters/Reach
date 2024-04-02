@@ -57,6 +57,9 @@ void OpenGLFramebuffer::CreateSkeleton()
     glBindRenderbuffer(GL_RENDERBUFFER, m_depthStencilAttachment);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, m_config.Width, m_config.Height);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthStencilAttachment);
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        std::cout << "ERROR::Failed to create frame buffer!" << std::endl;
+    }
 }
 
 void OpenGLFramebuffer::InitQuad() 

@@ -2,6 +2,7 @@
 #include "../Context/OpenGL/OpenGLRendererAPI.h"
 #include "../Context/OpenGL/OpenGLTexture.h"
 #include "../Context/OpenGL/OpenGLFramebuffer.h"
+#include "../App.h"
 
 // Out of class initializer for renderer api - OpenGL by default.
 RendererAPI* Renderer::m_rendererAPI = new OpenGLRendererAPI();
@@ -111,9 +112,10 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
 
 void Renderer::PrepareBackground(std::shared_ptr<Mesh> mesh, std::shared_ptr<Framebuffer> FBO, std::shared_ptr<Shader> eqToCubeShader) 
 {
-    auto texture = mesh->GetMaterial()->GetProps()->CubeTexture;
-    auto shader = mesh->GetMaterial()->GetShader();
-    glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+    auto cube_tex = mesh->GetMaterial()->GetProps()->CubeTexture;
+    auto hdri_tex = mesh->GetMaterial()->GetProps()->Textures[0];
+
+    glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 100.0f);
     glm::mat4 captureViews[6] = 
     {
         glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
@@ -128,7 +130,8 @@ void Renderer::PrepareBackground(std::shared_ptr<Mesh> mesh, std::shared_ptr<Fra
     eqToCubeShader->Use();
     eqToCubeShader->SetInt("equirectangularMap", 0);
     eqToCubeShader->SetMat4f("projection", captureProjection);
-    texture->Bind();
+    hdri_tex->Bind();
+    cube_tex->Bind();
 
     glViewport(0, 0, 512, 512); // don't forget to configure the viewport to the capture dimensions.
     FBO->Bind();
@@ -136,26 +139,33 @@ void Renderer::PrepareBackground(std::shared_ptr<Mesh> mesh, std::shared_ptr<Fra
     {
         eqToCubeShader->SetMat4f("view", captureViews[i]);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
-                            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, FBO->GetColorAttachmentID(), 0);
+                            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cube_tex->GetID(), 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        Renderer::Submit(mesh);
+        const auto& VAO = mesh->GetVAO();
+        VAO->Bind();
+        if(VAO->GetIndexBuffer())
+            m_rendererAPI->DrawIndexed(VAO);
+        else
+            m_rendererAPI->Draw(VAO);
+        VAO->Unbind();
     }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    texture->Unbind();
+    glBindBuffer(GL_FRAMEBUFFER, 0);
+    hdri_tex->Unbind();
+
 }
 
-void Renderer::CreateBackground(std::shared_ptr<Mesh> mesh, std::shared_ptr<PerspectiveCamera> camera) 
+void Renderer::CreateBackground(std::shared_ptr<Mesh> mesh,std::shared_ptr<Framebuffer> FBO, std::shared_ptr<PerspectiveCamera> camera) 
 {
-    auto texture = mesh->GetMaterial()->GetProps()->CubeTexture;
     auto shader = mesh->GetMaterial()->GetShader();
-
+    auto texture = mesh->GetMaterial()->GetProps()->CubeTexture;
     texture->Bind();
-    shader->SetInt("tex", 0);
+    shader->SetInt("environmentMap", 0);
     shader->SetMat4f("projection", camera->GetProjectionMatrix());
     shader->SetMat4f("view", camera->GetViewMatrix());
     Renderer::Submit(mesh);
     texture->Unbind();
+
 }
 
 void Renderer::CreateScene() 

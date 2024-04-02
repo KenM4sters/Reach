@@ -22,7 +22,7 @@ void Scene::OnAttach()
     // Camera
     App& app = App::GetInstance();
     m_window = app.GetWindow()->GetNativeWindow();
-    glm::vec3 camera_pos = glm::vec3(0.0f, 0.0f, 3.0f);
+    glm::vec3 camera_pos = glm::vec3(0.0f, 0.0f, 0.0f);
     uint32_t window_width = app.GetWindow()->GetWindowProps().Width;
     uint32_t window_height = app.GetWindow()->GetWindowProps().Height;
     m_camera = std::make_shared<PerspectiveCamera>(camera_pos, window_width, window_height);
@@ -49,15 +49,18 @@ void Scene::OnAttach()
         new Material(sphere_shader)
     );
     sphere_model->GetTransformProps()->Scale = glm::vec3(0.05f);
-    sphere_model->GetTransformProps()->Translation = glm::vec3(5.0f, 0.0f, 0.0f);
+    sphere_model->GetTransformProps()->Translation = glm::vec3(45.0f, 0.0f, 0.0f);
     m_models->push_back(sphere_model);
      
     // Light
     m_pointLight = new PointLight(OBJECT_TYPE::LIGHT, new PointLightProps());
-    m_pointLight->GetTransformProps()->Translation = glm::vec3(3.0f, 3.0f, 2.0f);
+    m_pointLight->GetTransformProps()->Translation = glm::vec3(-5.0f, 3.0f, 2.0f);
     m_pointLight->GetLightProps()->Intensity = 0.2f;
 
-    // Background
+
+    
+
+    // Background Mesh
     auto background_shader = Shader::Create("background_shader", "src/Shaders/Background.vert", "src/Shaders/Background.frag");
     auto vertices = MakeVertexFromFloat(cube_vertices);
     auto background_vao = VertexArray::Create(
@@ -67,16 +70,16 @@ void Scene::OnAttach()
         background_vao,
         new Material(background_shader)
     );
-    m_background->GetMaterial()->GetProps()->CubeTexture = CubeTexture::Create("Assets/Textures/ocean.hdr", "ocean_tex");
-    auto fbo_config = FramebufferConfig({
-        1,
-        512,
-        512
-    });
+    
+    // Background Environment
+    m_background->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/ocean.hdr", "ocean_tex"));
+    m_background->GetMaterial()->GetProps()->CubeTexture = CubeTexture::Create(512, 512);
+    auto fbo_config = FramebufferConfig({1, 512, 512});
+    m_backgroundFBO = Framebuffer::Create(fbo_config, FramebufferType::SKELETON);
     Renderer::PrepareBackground(
         m_background, 
-        Framebuffer::Create(fbo_config, FramebufferType::SKELETON), 
-        Shader::Create("background_shader", "src/Shaders/Background.vert", "src/Shaders/Background.frag")
+        m_backgroundFBO, 
+        Shader::Create("env_shader", "src/Shaders/EqToCube.vert", "src/Shaders/EqToCube.frag")
     );
     glViewport(0, 0, 1600, 1200); // PrepareBackground changes the viewport, so we need to reset it.
 }
@@ -89,7 +92,7 @@ void Scene::OnDetach()
 void Scene::Update()  
 {
     HandleUserInput();
-    Renderer::CreateBackground(m_background, m_camera);
+    Renderer::CreateBackground(m_background, m_backgroundFBO, m_camera);
     Renderer::PrepareScene(m_models, &m_camera, m_pointLight);
 }
 

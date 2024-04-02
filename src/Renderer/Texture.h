@@ -20,6 +20,7 @@ class Texture2D : public Texture {
         inline std::string& GetName() override { return m_debugName; }
         virtual inline uint32_t GetWidth() {return m_width;}
         virtual inline uint32_t GetHeight() {return m_height;}
+        virtual inline uint32_t GetID() {return m_ID;}
         void Bind() override;
         void Bind(uint32_t& count) override;
         void Unbind() override;
@@ -37,11 +38,15 @@ class CubeTexture : public Texture {
         inline std::string& GetName() override { return m_debugName; }
         virtual inline uint32_t GetWidth() {return m_width;}
         virtual inline uint32_t GetHeight() {return m_height;}
+        virtual inline uint32_t GetID() {return m_ID;}
         void Bind() override;
         void Bind(uint32_t& count) override;
         void Unbind() override;
         void Unbind(uint32_t& count) override;
         static std::shared_ptr<CubeTexture> Create(const char* path, const char* name);
+        // Function to create a skeleton texture with no data - useful when filling the data
+        // yourself with say a framebuffer object.
+        static std::shared_ptr<CubeTexture> Create(uint32_t width, uint32_t height);
     protected:        
         uint32_t m_ID;
         uint32_t m_width;

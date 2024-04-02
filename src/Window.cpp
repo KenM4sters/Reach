@@ -117,6 +117,7 @@ Window::Window(std::string name, uint16_t w, uint16_t h)
         std::cout << "FAILED to initialize GLAD" << std::endl;
     }
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
     glViewport(0, 0, 1600, 1200); // (800, 600) * pixel ratio of the screen in use.
 }
 

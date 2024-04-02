@@ -36,7 +36,7 @@ OpenGLTexture2D::OpenGLTexture2D(const char* path, const char* name, std::string
     if(data)
     {   
         GLenum format = GL_RGB;
-        if(file_ext == ".hdri") format = GL_RGB16F;
+        if(file_ext == ".hdr") format = GL_RGB16F;
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, this->m_ID);
@@ -106,6 +106,23 @@ OpenGLCubeTexture::OpenGLCubeTexture(const char* path, const char* name)
         std::cout << "ERROR::OpenGLTexture::Texture failed to load at path: " << path << std::endl;
         stbi_image_free(data);
     }
+}
+
+OpenGLCubeTexture::OpenGLCubeTexture(uint32_t width, uint32_t height) 
+{
+    glGenTextures(1, &m_ID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, m_ID);
+    for (unsigned int i = 0; i < 6; ++i)
+    {
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
 //================================================================

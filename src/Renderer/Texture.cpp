@@ -68,28 +68,44 @@ std::shared_ptr<CubeTexture> CubeTexture::Create(const char* path, const char* n
     }
 }
 
+std::shared_ptr<CubeTexture> CubeTexture::Create(uint32_t width, uint32_t height)
+{
+    switch(Renderer::m_rendererAPI->GetAPI()) 
+    {
+        case API::VOID:
+            throw std::runtime_error("ERROR::VertexBuffer::Create() - Renderer::m_rendererAPI::API is currently set to VOID!");
+            break;
+        case API::OPEN_GL:
+            return std::make_shared<CubeTexture>(OpenGLCubeTexture(width, height));
+            break;
+        case API::VULKAN:
+            throw std::runtime_error("Error::VertexBuffer::Create() - RendererAPI::Vulkan is currently unavailabe.");
+            break;   
+    }
+}
+
 void CubeTexture::Bind() 
 {
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_ID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, m_ID);
 }
 
 void CubeTexture::Bind(uint32_t& count) 
 {
     glActiveTexture(GL_TEXTURE0 + count);
-    glBindTexture(GL_TEXTURE_2D, m_ID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, m_ID);
 }
 
 void CubeTexture::Unbind() 
 {
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
 void CubeTexture::Unbind(uint32_t& count) 
 {
     glActiveTexture(GL_TEXTURE0 + count);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
 //================================================================
