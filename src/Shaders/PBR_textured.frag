@@ -23,11 +23,11 @@ uniform vec3 CameraPos;
 
 uniform Light light;
 uniform Material material;
-uniform sampler2D texture_diffuse1;
-uniform sampler2D texture_height1;
-uniform sampler2D texture_mettalic1;
-uniform sampler2D texture_roughness1;
-uniform sampler2D texture_ao1;
+uniform sampler2D texture_diffuse;
+uniform sampler2D texture_height;
+uniform sampler2D texture_metallic;
+uniform sampler2D texture_roughness;
+uniform sampler2D texture_ao;
 
 uniform samplerCube env_map;
 
@@ -40,11 +40,11 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0);
 void main() 
 {
     // Setting values as single float values of textures.
-    material.Albedo     = texture(texture_diffuse1, vUv).r;
-    material.Height     = texture(texture_height1, vUv).r;
-    material.Metallic   = texture(texture_metallic1, vUv).r;
-    material.Roughness  = texture(texture_roughness1, vUv).r;
-    material.AO         = texture(texture_ao1, vUv).r;
+    vec3 Albedo      = pow(texture(texture_diffuse, vUv).rgb, vec3(2.2));
+    float Height     = texture(texture_height, vUv).r;
+    float Metallic   = texture(texture_metallic, vUv).r;
+    float Roughness  = texture(texture_roughness, vUv).r;
+    float AO         = texture(texture_ao, vUv).r;
 
     // Setup
     //================================================================
@@ -62,11 +62,11 @@ void main()
     // BRDF
     //================================================================
     vec3 F0 = vec3(0.04);
-    F0 = mix(F0, material.Albedo, material.Metallic);
+    F0 = mix(F0, Albedo, Metallic);
     vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
 
-    float NDF = DistributionGGX(N, H, material.Roughness);
-    float G = GeometrySmith(N, H, L, material.Roughness);
+    float NDF = DistributionGGX(N, H, Roughness);
+    float G = GeometrySmith(N, H, L, Roughness);
 
     vec3 numerator = NDF * G * F;
     float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, V), 0.0) + 0.0001;
@@ -74,14 +74,14 @@ void main()
 
     vec3 Ks = F;
     vec3 Kd = vec3(1.0) - F;
-    Kd *= 1.0 - material.Metallic;
+    Kd *= 1.0 - Metallic;
 
     float NdotL = max(dot(N, L), 0.0);        
-    vec3 Lo = (Kd * material.Albedo / PI + specular) * radiance * NdotL;
+    vec3 Lo = (Kd * Albedo / PI + specular) * radiance * NdotL;
 
     vec3 irradiance = texture(env_map, N).rgb;
-    vec3 diffuse = irradiance * material.Albedo;
-    vec3 ambient = Kd * diffuse * material.AO;
+    vec3 diffuse = irradiance * Albedo;
+    vec3 ambient = Kd * diffuse * AO;
     vec3 color = ambient + Lo;
 
     // HDRI
