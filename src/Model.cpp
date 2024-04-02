@@ -76,11 +76,21 @@ Mesh Model::ProcessModelMesh(aiMesh *mesh, const aiScene *scene) {
     std::vector<std::shared_ptr<Texture2D>> specularMaps = LoadModelTextures(material, aiTextureType_SPECULAR, "texture_specular");
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     // Normal maps
-    std::vector<std::shared_ptr<Texture2D>> normalMaps = LoadModelTextures(material, aiTextureType_HEIGHT, "texture_normal");
+    std::vector<std::shared_ptr<Texture2D>> normalMaps = LoadModelTextures(material, aiTextureType_NORMALS, "texture_normal");
     textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
     // Height maps
-    std::vector<std::shared_ptr<Texture2D>> heightMaps = LoadModelTextures(material, aiTextureType_AMBIENT, "texture_height");
+    std::vector<std::shared_ptr<Texture2D>> heightMaps = LoadModelTextures(material, aiTextureType_HEIGHT, "texture_height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+    // Metallic maps
+    std::vector<std::shared_ptr<Texture2D>> metallicMaps = LoadModelTextures(material, aiTextureType_METALNESS, "texture_metallic");
+    textures.insert(textures.end(), metallicMaps.begin(), metallicMaps.end());
+    // Roughness maps
+    std::vector<std::shared_ptr<Texture2D>> roughnessMaps = LoadModelTextures(material, aiTextureType_DIFFUSE_ROUGHNESS, "texture_roughness");
+    textures.insert(textures.end(), roughnessMaps.begin(), roughnessMaps.end());
+    // AO maps
+    std::vector<std::shared_ptr<Texture2D>> AOMaps = LoadModelTextures(material, aiTextureType_AMBIENT_OCCLUSION, "texture_ao");
+    textures.insert(textures.end(), AOMaps.begin(), AOMaps.end());
+
     
     // Next step it to finally create our mesh from our vertices, indices, and materials.
     Material* mat = LoadMaterial(material, m_material->GetShader());

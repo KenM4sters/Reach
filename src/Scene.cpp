@@ -31,7 +31,7 @@ void Scene::OnAttach()
     m_models = std::make_shared<std::vector<std::shared_ptr<Model>>>();
 
     // Backpack Model
-    auto backpack_shader = Shader::Create("backpack_shader", "src/Shaders/PHONG_textured.vert", "src/Shaders/PHONG_textured.frag");
+    auto backpack_shader = Shader::Create("Backpack_shader", "src/Shaders/PHONG_textured.vert", "src/Shaders/PHONG_textured.frag");
     auto backpack_model = std::make_shared<Model>(
         "Assets/Models/backpack/backpack.obj",
         OBJECT_TYPE::MODEL, 
@@ -42,7 +42,7 @@ void Scene::OnAttach()
     m_models->push_back(backpack_model);
     
     // Sphere Model
-    auto sphere_shader = Shader::Create("sphere_shader", "src/Shaders/PBR_bare.vert", "src/Shaders/PBR_bare.frag");
+    auto sphere_shader = Shader::Create("Sphere_shader", "src/Shaders/PBR_bare.vert", "src/Shaders/PBR_bare.frag");
     auto sphere_model = std::make_shared<Model>(
         "Assets/Models/Sphere/sphere.obj", 
         OBJECT_TYPE::MODEL, 
@@ -57,18 +57,16 @@ void Scene::OnAttach()
     m_pointLight->GetTransformProps()->Translation = glm::vec3(-5.0f, 3.0f, 2.0f);
     m_pointLight->GetLightProps()->Intensity = 4.0f;
 
-
-    
-
     // Background Environment
     m_skybox = std::make_shared<Skybox>(
         Texture2D::Create("Assets/Textures/ocean.hdr", "ocean"),
         Shader::Create("background_shader", "src/Shaders/Background.vert", "src/Shaders/Background.frag")
     );
 
-
+    // Give all models the convoluted map for shading.
     backpack_model->GetMaterial()->GetProps()->CubeTexture = m_skybox->m_convolutedCubeMap;
     sphere_model->GetMaterial()->GetProps()->CubeTexture = m_skybox->m_convolutedCubeMap;
+
     // Cube map generation is all done now, so we can set our camera back to a more appropriate place.
     glm::vec3 new_camera_pos = glm::vec3(0.0f, 0.0f, 5.0f);
     m_camera->SetPosition(new_camera_pos);

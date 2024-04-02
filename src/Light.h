@@ -4,7 +4,7 @@
 
 struct PointLightProps {
     glm::vec3 AmbientColor{1.0f, 1.0f, 1.0f};
-    float Intensity{1.0f};
+    float Intensity{30.0f};
 };
 
 

@@ -65,6 +65,9 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
             uint16_t specular_count = 1;
             uint16_t normal_count = 1;
             uint16_t height_count = 1;
+            uint16_t metallic_count = 1;
+            uint16_t roughness_count = 1;
+            uint16_t ao_count = 1;
             auto& textures = mesh.GetMaterial()->GetProps()->Textures;
             auto& cube_texture = model->GetMaterial()->GetProps()->CubeTexture;
             auto shader = mesh.GetMaterial()->GetShader();
@@ -79,9 +82,13 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
                     tex_index = std::to_string(normal_count++);
                 } else if(name == "texture_height") {
                     tex_index = std::to_string(height_count++);
-                } else {
-                    tex_index = "";
-                }
+                } else if(name == "texture_metallic") {
+                    tex_index = std::to_string(height_count++);
+                } else if(name == "texture_roughness") {
+                    tex_index = std::to_string(height_count++);
+                } else if(name == "texture_ao") {
+                    tex_index = std::to_string(height_count++);
+                } 
                 shader->Use();
                 textures[i]->Bind(i);
                 shader->SetInt(name + tex_index, i);
