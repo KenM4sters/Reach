@@ -59,35 +59,16 @@ void Scene::OnAttach()
 
 
     
-    // Background Mesh
-    auto background_shader = Shader::Create("background_shader", "src/Shaders/Background.vert", "src/Shaders/Background.frag");
-    auto vertices = MakeVertexFromFloat(cube_vertices);
-    auto background_vao = VertexArray::Create(
-        VertexBuffer::Create(vertices, vertices.size()*sizeof(Vertex))
-    );
-    m_background = std::make_shared<Mesh>(
-        background_vao,
-        new Material(background_shader)
-    );
-    
+
     // Background Environment
-    m_background->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/ocean.hdr", "ocean"));
-    m_background->GetMaterial()->GetProps()->CubeTexture = CubeTexture::Create(512, 512);
-    auto convolutedTex = CubeTexture::Create(32, 32);
-    auto fbo_config = FramebufferConfig({1, 512, 512});
-    m_backgroundFBO = Framebuffer::Create(fbo_config, FramebufferType::SKELETON);
-
-    Renderer::PrepareBackground(
-        m_background, 
-        m_backgroundFBO, 
-        Shader::Create("env_shader", "src/Shaders/EqToCube.vert", "src/Shaders/EqToCube.frag"),
-        convolutedTex
+    m_skybox = std::make_shared<Skybox>(
+        Texture2D::Create("Assets/Textures/ocean.hdr", "ocean"),
+        Shader::Create("background_shader", "src/Shaders/Background.vert", "src/Shaders/Background.frag")
     );
-    glViewport(0, 0, 1600, 1200); // PrepareBackground changes the viewport, so we need to reset it.
 
-    backpack_model->GetMaterial()->GetProps()->CubeTexture = convolutedTex;
-    sphere_model->GetMaterial()->GetProps()->CubeTexture = convolutedTex;
 
+    backpack_model->GetMaterial()->GetProps()->CubeTexture = m_skybox->m_convolutedCubeMap;
+    sphere_model->GetMaterial()->GetProps()->CubeTexture = m_skybox->m_convolutedCubeMap;
     // Cube map generation is all done now, so we can set our camera back to a more appropriate place.
     glm::vec3 new_camera_pos = glm::vec3(0.0f, 0.0f, 5.0f);
     m_camera->SetPosition(new_camera_pos);
@@ -102,7 +83,7 @@ void Scene::OnDetach()
 void Scene::Update()  
 {
     HandleUserInput();
-    Renderer::CreateBackground(m_background, m_backgroundFBO, m_camera);
+    Renderer::CreateBackground(m_skybox, m_camera);
     Renderer::PrepareScene(m_models, &m_camera, m_pointLight);
 }
 

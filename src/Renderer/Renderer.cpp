@@ -45,6 +45,16 @@ void Renderer::Submit(const std::shared_ptr<Model>& model)
     }
 }
 
+void Renderer::Draw(const std::shared_ptr<VertexArray> vao) 
+{
+    vao->Bind();
+    if(vao->GetIndexBuffer())
+        m_rendererAPI->DrawIndexed(vao);
+    else
+        m_rendererAPI->Draw(vao);
+    vao->Unbind();
+}
+
 void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>& models, std::shared_ptr<PerspectiveCamera>* camera, Light* light) 
 {
     for(const auto& model : *models) 
@@ -118,97 +128,15 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
     }
 }
 
-void Renderer::PrepareBackground(std::shared_ptr<Mesh> mesh, std::shared_ptr<Framebuffer> FBO, std::shared_ptr<Shader> eqToCubeShader, std::shared_ptr<CubeTexture> convolutedTex) 
+void Renderer::CreateBackground(std::shared_ptr<Skybox> skybox, std::shared_ptr<PerspectiveCamera> camera) 
 {
-
-    auto convolutionShader = Shader::Create("convolutionShader", "src/Shaders/Convolution.vert", "src/Shaders/Convolution.frag");
-    auto cube_tex = mesh->GetMaterial()->GetProps()->CubeTexture;
-    auto hdri_tex = mesh->GetMaterial()->GetProps()->Textures[0];
-
-    glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 100.0f);
-    glm::mat4 captureViews[6] = 
-    {
-        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
-        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
-        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
-    };
-
-    // convert HDR equirectangular environment map to cubemap equivalent
-    eqToCubeShader->Use();
-    eqToCubeShader->SetInt("equirectangularMap", 0);
-    eqToCubeShader->SetMat4f("projection", captureProjection);
-    hdri_tex->Bind();
-    cube_tex->Bind();
-
-    glViewport(0, 0, 512, 512); // don't forget to configure the viewport to the capture dimensions.
-    FBO->Bind();
-    for (unsigned int i = 0; i < 6; ++i)
-    {
-        eqToCubeShader->SetMat4f("view", captureViews[i]);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
-                            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cube_tex->GetID(), 0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        const auto& VAO = mesh->GetVAO();
-        VAO->Bind();
-        if(VAO->GetIndexBuffer())
-            m_rendererAPI->DrawIndexed(VAO);
-        else
-            m_rendererAPI->Draw(VAO);
-        VAO->Unbind();
-    }
-    glBindBuffer(GL_FRAMEBUFFER, 0);
-    hdri_tex->Unbind();
-    eqToCubeShader->Release();
-    cube_tex->Unbind();
-
-
-    // Convolute the cube map
-    auto convolution_config = FramebufferConfig({1, 32, 32});
-    FBO->SetConfig(convolution_config);
-
-    convolutionShader->Use();
-    convolutionShader->SetInt("environmentMap", 0);
-    convolutionShader->SetMat4f("projection", captureProjection);
-    glViewport(0, 0, 32, 32); // don't forget to configure the viewport to the capture dimensions.
-    FBO->Bind();
-    cube_tex->Bind();
-    for (unsigned int i = 0; i < 6; ++i)
-    {
-        convolutionShader->SetMat4f("view", captureViews[i]);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
-                            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, convolutedTex->GetID(), 0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        const auto& VAO = mesh->GetVAO();
-        VAO->Bind();
-        if(VAO->GetIndexBuffer())
-            m_rendererAPI->DrawIndexed(VAO);
-        else
-            m_rendererAPI->Draw(VAO);
-        VAO->Unbind();
-    }
-    glBindBuffer(GL_FRAMEBUFFER, 0);
-    cube_tex->Unbind();
-    convolutionShader->Release();
-
-    // Optional - Convulted texture can look pretty cool if you don't want an obvious background.
-    // mesh->GetMaterial()->GetProps()->CubeTexture = convolutedTex;
-
-}
-
-void Renderer::CreateBackground(std::shared_ptr<Mesh> mesh,std::shared_ptr<Framebuffer> FBO, std::shared_ptr<PerspectiveCamera> camera) 
-{
-    auto shader = mesh->GetMaterial()->GetShader();
-    auto texture = mesh->GetMaterial()->GetProps()->CubeTexture;
+    auto shader = skybox->GetMesh()->GetMaterial()->GetShader();
+    auto texture = skybox->GetMesh()->GetMaterial()->GetProps()->CubeTexture;
     texture->Bind();
     shader->SetInt("environmentMap", 0);
     shader->SetMat4f("projection", camera->GetProjectionMatrix());
     shader->SetMat4f("view", camera->GetViewMatrix());
-    Renderer::Submit(mesh);
+    Renderer::Submit(skybox->GetMesh());
     texture->Unbind();
 
 }

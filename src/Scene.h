@@ -8,6 +8,7 @@
 #include "Light.h"
 #include "Model.h"
 #include "Renderer/Framebuffer.h"
+#include "Skybox.h"
 
 class Scene : public Layer {
     public:
@@ -25,6 +26,7 @@ class Scene : public Layer {
         std::shared_ptr<Mesh> m_convolutedBackground = nullptr;
         std::shared_ptr<Framebuffer> m_backgroundFBO = nullptr;
         std::shared_ptr<Framebuffer> m_convolutedBackgroundFBO = nullptr;
+        std::shared_ptr<Skybox> m_skybox = nullptr;
         Light* m_pointLight = nullptr;
         GLFWwindow* m_window = nullptr;
 };
