@@ -30,7 +30,7 @@ uniform sampler2D texture_metallic;
 uniform sampler2D texture_roughness;
 uniform sampler2D texture_ao;
 
-uniform samplerCube env_map;
+uniform samplerCube convoluted_map;
 
 const float PI = 3.14159265359;
 float DistributionGGX(vec3 N, vec3 H, float roughness);
@@ -81,7 +81,7 @@ void main()
     float NdotL = max(dot(N, L), 0.0);        
     vec3 Lo = (Kd * Albedo / PI + specular) * radiance * NdotL;
 
-    vec3 irradiance = texture(env_map, N).rgb;
+    vec3 irradiance = texture(convoluted_map, N).rgb;
     vec3 diffuse = irradiance * Albedo;
     vec3 ambient = Kd * diffuse * AO;
     vec3 color = ambient + Lo;

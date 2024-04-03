@@ -7,9 +7,9 @@ class Texture {
         virtual ~Texture() {}
         virtual inline std::string& GetName() = 0;
         virtual void Bind() = 0;
-        virtual void Bind(uint32_t& count) = 0;
+        virtual void Bind(uint32_t count) = 0;
         virtual void Unbind() = 0;
-        virtual void Unbind(uint32_t& count) = 0;
+        virtual void Unbind(uint32_t count) = 0;
     protected:
         std::string m_debugName;
 };
@@ -22,9 +22,9 @@ class Texture2D : public Texture {
         virtual inline uint32_t GetHeight() {return m_height;}
         virtual inline uint32_t GetID() {return m_ID;}
         void Bind() override;
-        void Bind(uint32_t& count) override;
+        void Bind(uint32_t count) override;
         void Unbind() override;
-        void Unbind(uint32_t& count) override;
+        void Unbind(uint32_t count) override;
         static std::shared_ptr<Texture2D> Create(const char* path, const char* name, std::string dir = "");
         static std::shared_ptr<Texture2D> Create(uint32_t width, uint32_t height, uint32_t nrChannels);
     protected:        
@@ -41,9 +41,9 @@ class CubeTexture : public Texture {
         virtual inline uint32_t GetHeight() {return m_height;}
         virtual inline uint32_t GetID() {return m_ID;}
         void Bind() override;
-        void Bind(uint32_t& count) override;
+        void Bind(uint32_t count) override;
         void Unbind() override;
-        void Unbind(uint32_t& count) override;
+        void Unbind(uint32_t count) override;
         static std::shared_ptr<CubeTexture> Create(const char* path, const char* name);
         // Function to create a skeleton texture with no data - useful when filling the data
         // yourself with say a framebuffer object.

@@ -9,10 +9,11 @@ Skybox::Skybox(std::shared_ptr<Texture2D> HDR, std::shared_ptr<Shader> skyboxSha
     m_mesh = std::make_shared<Mesh>(background_vao, new Material(skyboxShader));
 
     m_mesh->GetMaterial()->GetProps()->Textures.push_back(HDR);
-    m_mesh->GetMaterial()->GetProps()->CubeTexture = CubeTexture::Create(512, 512);
+    m_mesh->GetMaterial()->GetProps()->CubeTexture = CubeTexture::Create(512, 512, true);
 
     m_convolutedCubeMap = CubeTexture::Create(32, 32, false);
     m_prefilteredCubeMap = CubeTexture::Create(128, 128, true);
+    m_BRDFTexture = Texture2D::Create(512, 512, 2);
 
     PrepareFramebuffer();
     PrepareTextures();
@@ -35,11 +36,12 @@ void Skybox::PrepareTextures()
     auto convolutionShader = Shader::Create("convolutionShader", "src/Shaders/Convolution.vert", "src/Shaders/Convolution.frag");
     auto eqToCubeShader = Shader::Create("env_shader", "src/Shaders/EqToCube.vert", "src/Shaders/EqToCube.frag");
     auto prefilterShader = Shader::Create("prefilter_shader", "src/Shaders/Prefilter.vert", "src/Shaders/Prefilter.frag");
+    auto BRDF_shader = Shader::Create("BRDF_shader", "src/Shaders/BRDF.vert", "src/Shaders/BRDF.frag");
 
     auto lookUpTexture = Texture2D::Create(512, 512, 2); // Skeleton texture (no pre-loaded data).
     
-    auto cube_tex = m_mesh->GetMaterial()->GetProps()->CubeTexture;
-    auto hdri_tex = m_mesh->GetMaterial()->GetProps()->Textures[0];
+    auto& cube_tex = m_mesh->GetMaterial()->GetProps()->CubeTexture;
+    auto& hdri_tex = m_mesh->GetMaterial()->GetProps()->Textures[0];
 
     glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 100.0f);
     glm::mat4 captureViews[6] = 
@@ -99,6 +101,7 @@ void Skybox::PrepareTextures()
 
         Renderer::Draw(m_mesh->GetVAO()); // Draws VAO without using any shaders or textures.
     }
+
     // Clean up.
     glBindBuffer(GL_FRAMEBUFFER, 0);
     cube_tex->Unbind();
@@ -134,20 +137,31 @@ void Skybox::PrepareTextures()
             Renderer::Draw(m_mesh->GetVAO()); // Draws VAO without using any shaders or textures.
         }
     }
+    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // BRDF
 
     // Look Up texture
+    auto quad_vertices = MakeVertexFromFloat(square_vertices);
+    auto vao = VertexArray::Create(VertexBuffer::Create(quad_vertices, quad_vertices.size()*sizeof(Vertex)));
 
+    auto brdf_config = FramebufferConfig({1, 512, 512});
+    m_FBO->SetConfig(brdf_config);
+    m_FBO->Bind();
+    BRDF_shader->Use();
+    m_BRDFTexture->Bind();
+    glViewport(0, 0, 512, 512);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_BRDFTexture->GetID(), 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    Renderer::Draw(vao);
 
-
-
-
-
+    m_FBO->Unbind();
+    BRDF_shader->Release();
+    m_BRDFTexture->Unbind();
 
     // Optional - Convoluted texture can look pretty cool if you don't want an obvious background.
-    m_mesh->GetMaterial()->GetProps()->CubeTexture = m_prefilteredCubeMap;
+    // m_mesh->GetMaterial()->GetProps()->CubeTexture = m_convolutedCubeMap;
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS); // Blends the colors around each side of the cube map.
 }
 

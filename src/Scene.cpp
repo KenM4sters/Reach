@@ -89,7 +89,7 @@ void Scene::OnAttach()
         glm::radians(-90.0f),
         glm::vec3(1.0f, 0.0f, 0.0f)
     );
-    cerberus_model->GetTransformProps()->Translation = glm::vec3(0.0f,-200.0f, 0.0f);
+    cerberus_model->GetTransformProps()->Translation = glm::vec3(0.0f,-50.0f, 0.0f);
     m_models->push_back(cerberus_model);
      
     // Light
@@ -103,11 +103,6 @@ void Scene::OnAttach()
         Shader::Create("background_shader", "src/Shaders/Background.vert", "src/Shaders/Background.frag")
     );
 
-    // Give all models the convoluted map for shading.
-    backpack_model->GetMaterial()->GetProps()->CubeTexture = m_skybox->m_convolutedCubeMap;
-    sphere_model->GetMaterial()->GetProps()->CubeTexture = m_skybox->m_convolutedCubeMap;
-    textured_sphere_model->GetMaterial()->GetProps()->CubeTexture = m_skybox->m_convolutedCubeMap;
-    cerberus_model->GetMaterial()->GetProps()->CubeTexture = m_skybox->m_convolutedCubeMap;
 
     // Cube map generation is all done now, so we can set our camera back to a more appropriate place.
     glm::vec3 new_camera_pos = glm::vec3(0.0f, 0.0f, 5.0f);
@@ -124,7 +119,7 @@ void Scene::Update()
 {
     HandleUserInput();
     Renderer::CreateBackground(m_skybox, m_camera);
-    Renderer::PrepareScene(m_models, &m_camera, m_pointLight);
+    Renderer::PrepareScene(m_models, &m_camera, m_skybox, m_pointLight);
 }
 
 void Scene::UpdateInterface()  

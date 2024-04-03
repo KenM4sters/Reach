@@ -44,7 +44,7 @@ void Texture2D::Bind()
     glBindTexture(GL_TEXTURE_2D, m_ID);
 }
 
-void Texture2D::Bind(uint32_t& count) 
+void Texture2D::Bind(uint32_t count) 
 {
     glActiveTexture(GL_TEXTURE0 + count);
     glBindTexture(GL_TEXTURE_2D, m_ID);
@@ -56,7 +56,7 @@ void Texture2D::Unbind()
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Texture2D::Unbind(uint32_t& count) 
+void Texture2D::Unbind(uint32_t count) 
 {
     glActiveTexture(GL_TEXTURE0 + count);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -106,7 +106,7 @@ void CubeTexture::Bind()
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_ID);
 }
 
-void CubeTexture::Bind(uint32_t& count) 
+void CubeTexture::Bind(uint32_t count) 
 {
     glActiveTexture(GL_TEXTURE0 + count);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_ID);
@@ -118,7 +118,7 @@ void CubeTexture::Unbind()
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
-void CubeTexture::Unbind(uint32_t& count) 
+void CubeTexture::Unbind(uint32_t count) 
 {
     glActiveTexture(GL_TEXTURE0 + count);
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);

@@ -6,6 +6,7 @@
 
 // Out of class initializer for renderer api - OpenGL by default.
 RendererAPI* Renderer::m_rendererAPI = new OpenGLRendererAPI();
+static uint32_t TEX_UNIT = 0; // Keeps track of the lowest texture unit that's not in use.
 
 void Renderer::Submit(const std::shared_ptr<Framebuffer>& fbo) 
 {
@@ -55,10 +56,8 @@ void Renderer::Draw(const std::shared_ptr<VertexArray> vao)
     vao->Unbind();
 }
 
-void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>& models, std::shared_ptr<PerspectiveCamera>* camera, Light* light) 
+void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>& models, std::shared_ptr<PerspectiveCamera>* camera, std::shared_ptr<Skybox> skybox, Light* light) 
 {
-
-    static uint32_t TEX_UNIT = 0; // Keeps track of the lowest texture unit that's not in use.
 
     for(const auto& model : *models) 
     {
@@ -74,7 +73,9 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
 
             auto& textures = mesh.GetMaterial()->GetProps()->Textures;
             auto& model_textures = model->GetMaterial()->GetProps()->Textures;
-            auto& cube_texture = model->GetMaterial()->GetProps()->CubeTexture;
+            std::shared_ptr<CubeTexture> convoluted_texture = skybox->m_convolutedCubeMap;
+            std::shared_ptr<CubeTexture> prefiltered_texture = skybox->m_prefilteredCubeMap;
+            std::shared_ptr<Texture2D> BRDF_texture = skybox->m_BRDFTexture;
             auto shader = mesh.GetMaterial()->GetShader();
 
             for(uint32_t i = 0; i < textures.size(); i++) {
@@ -108,12 +109,18 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
                 shader->SetInt(name, TEX_UNIT);
                 TEX_UNIT++;
             }
-            // Add the environemt map.
-            // Don't forget to adjust the active texture unit to consider any previously set textures.
-            // In our case it's just the model textures that are taking up the first few spots.
-            auto tex_unit = (uint32_t)model_textures.size();
-            cube_texture->Bind(TEX_UNIT);
-            shader->SetInt("env_map", TEX_UNIT);
+
+            // Convoluted Environemt Map.
+            convoluted_texture->Bind(TEX_UNIT);
+            shader->SetInt("convoluted_map", TEX_UNIT);
+            TEX_UNIT++;
+            // Perfiltered Map.
+            prefiltered_texture->Bind(TEX_UNIT);
+            shader->SetInt("prefiltered_map", TEX_UNIT);
+            TEX_UNIT++;
+            // BRDF Texture.
+            convoluted_texture->Bind(TEX_UNIT);
+            shader->SetInt("BRDF_map", TEX_UNIT);
             TEX_UNIT++;
 
             // Material Props (not really needed if the model has textures, but definitiely needed if it doesn't).
@@ -149,7 +156,7 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
             Renderer::Submit(ptr);
 
             // Cleanup.
-            cube_texture->Unbind();
+            convoluted_texture->Unbind();
             shader->Release();
             TEX_UNIT = 0;
         }

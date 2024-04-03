@@ -14,7 +14,7 @@ class Renderer {
         static void Submit(const std::shared_ptr<Model>& model);
         static void Submit(const std::shared_ptr<Framebuffer>& fbo);
         static void Draw(const std::shared_ptr<VertexArray> vao);
-        static void PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>& models, std::shared_ptr<PerspectiveCamera>* camera, Light* light);
+        static void PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>& models, std::shared_ptr<PerspectiveCamera>* camera, std::shared_ptr<Skybox> skybox, Light* light);
         static void CreateBackground(std::shared_ptr<Skybox> skybox, std::shared_ptr<PerspectiveCamera> camera);
         // May end up seperating the scene render into 3 parts.
         static void CreateScene(); 
