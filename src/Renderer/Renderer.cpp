@@ -93,8 +93,11 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
                 shader->SetInt(name, i);
             }
             // Add the environemt map.
-            cube_texture->Bind();
-            shader->SetInt("env_map", textures.size());
+            // Don't forget to adjust the active texture unit to consider any previously set textures.
+            // In our case it's just the model textures that are taking up the first few spots.
+            auto tex_unit = (uint32_t)model_textures.size();
+            cube_texture->Bind(tex_unit);
+            shader->SetInt("env_map", tex_unit);
 
             // Material Props (not really needed if the model has textures, but definitiely needed if it doesn't).
             auto mat_props = mesh.GetMaterial()->GetProps();
@@ -126,8 +129,8 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
             // Finally submit each mesh of our model for rendering.
             const auto& ptr = std::make_shared<Mesh>(mesh);
             Renderer::Submit(ptr);
+
             // Cleanup.
-            glActiveTexture(GL_TEXTURE0);
             cube_texture->Unbind();
             shader->Release();
         }

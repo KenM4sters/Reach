@@ -57,10 +57,10 @@ void main()
     float Distance = length(light.Position - vFragPos);
     float attentuation = Distance / pow(Distance, 2);
     vec3 radiance = light.AmbientColor * attentuation * light.Intensity;
-    //================================================================
+    // //================================================================
     
-    // BRDF
-    //================================================================
+    // // BRDF
+    // //================================================================
     vec3 F0 = vec3(0.04);
     F0 = mix(F0, Albedo, Metallic);
     vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
