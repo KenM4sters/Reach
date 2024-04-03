@@ -31,6 +31,8 @@ uniform sampler2D texture_roughness;
 uniform sampler2D texture_ao;
 
 uniform samplerCube convoluted_map;
+uniform samplerCube prefiltered_map;
+uniform sampler2D BRDF_map;
 
 const float PI = 3.14159265359;
 float DistributionGGX(vec3 N, vec3 H, float roughness);

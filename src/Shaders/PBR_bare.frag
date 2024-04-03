@@ -22,20 +22,25 @@ uniform vec4 uColor;
 uniform Light light;
 uniform Material material;
 uniform vec3 CameraPos;
+
 uniform samplerCube convoluted_map;
+uniform samplerCube prefiltered_map;
+uniform sampler2D BRDF_map;
 
 const float PI = 3.14159265359;
 float DistributionGGX(vec3 N, vec3 H, float roughness);
 float GeometrySchlickGGX(float NdotV, float roughness);
 float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness);
-vec3 fresnelSchlick(float cosTheta, vec3 F0);
+vec3 FresnelSchlick(float cosTheta, vec3 F0);
+vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness);
 
 void main() 
 {
     // Setup
     //================================================================
     vec3 V = normalize(CameraPos - vFragPos);
-    vec3 N = normalize(vNormal);    
+    vec3 N = normalize(vNormal);  
+    vec3 R = reflect(-V, N);  
 
     vec3 L = normalize(light.Position - vFragPos);
     vec3 H = normalize(V + L);
@@ -49,7 +54,7 @@ void main()
     //================================================================
     vec3 F0 = vec3(0.04);
     F0 = mix(F0, material.Albedo, material.Metallic);
-    vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
+    vec3 F = FresnelSchlick(max(dot(H, V), 0.0), F0);
 
     float NDF = DistributionGGX(N, H, material.Roughness);
     float G = GeometrySmith(N, H, L, material.Roughness);
@@ -65,9 +70,21 @@ void main()
     float NdotL = max(dot(N, L), 0.0);        
     vec3 Lo = (Kd * material.Albedo / PI + specular) * radiance * NdotL;
 
+    vec3 FR = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, material.Roughness);
+
+    vec3 kS = FR;
+    vec3 kD = 1.0 - kS;
+    kD *= 1.0 - material.Metallic;	  
+    
     vec3 irradiance = texture(convoluted_map, N).rgb;
-    vec3 diffuse = irradiance * material.Albedo;
-    vec3 ambient = Kd * diffuse * material.AO;
+    vec3 diffuse    = irradiance * material.Albedo;
+    
+    const float MAX_REFLECTION_LOD = 4.0;
+    vec3 prefilteredColor = textureLod(prefiltered_map, R,  material.Roughness * MAX_REFLECTION_LOD).rgb;   
+    vec2 envBRDF  = texture(BRDF_map, vec2(max(dot(N, V), 0.0), material.Roughness)).rg;
+    vec3 final_specular = prefilteredColor * (FR * envBRDF.x + envBRDF.y);
+    
+    vec3 ambient = (kD * diffuse + final_specular) * material.AO; 
     vec3 color = ambient + Lo;
 
     // HDRI
@@ -78,9 +95,14 @@ void main()
 
 }
 
-vec3 fresnelSchlick(float cosTheta, vec3 F0)
+vec3 FresnelSchlick(float cosTheta, vec3 F0)
 {
     return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}  
+
+vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
+{
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }  
 
 float DistributionGGX(vec3 N, vec3 H, float roughness)

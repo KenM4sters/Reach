@@ -110,6 +110,11 @@ void Skybox::PrepareTextures()
 
     // Prefilter Map
 
+    // Generate Mip Map.
+    m_prefilteredCubeMap->Bind();
+    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+    m_prefilteredCubeMap->Unbind();
+
     prefilterShader->Use();
     prefilterShader->SetInt("environmentMap", 0);
     prefilterShader->SetMat4f("projection", captureProjection);
@@ -137,7 +142,10 @@ void Skybox::PrepareTextures()
             Renderer::Draw(m_mesh->GetVAO()); // Draws VAO without using any shaders or textures.
         }
     }
-    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+    // Cleanup.
+    prefilterShader->Release();
+    m_FBO->Unbind();
+    cube_tex->Unbind();
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // BRDF
@@ -161,7 +169,7 @@ void Skybox::PrepareTextures()
     m_BRDFTexture->Unbind();
 
     // Optional - Convoluted texture can look pretty cool if you don't want an obvious background.
-    // m_mesh->GetMaterial()->GetProps()->CubeTexture = m_convolutedCubeMap;
+    // m_mesh->GetMaterial()->GetProps()->CubeTexture = m_prefilteredCubeMap;
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS); // Blends the colors around each side of the cube map.
 }
 
