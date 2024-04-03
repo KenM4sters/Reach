@@ -110,7 +110,19 @@ std::vector<std::shared_ptr<Texture2D>> Model::LoadModelTextures(aiMaterial* mat
     for(unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
         aiString str;
         mat->GetTexture(type, i, &str);
+
         auto str_c = str.C_Str();
+
+        // Some textures use "\" for file paths which don't work on unix platforms,
+        // so we need to find and replace them with "/".
+        std::string modified_str = std::string(str_c);
+        while(modified_str.find("\\") != std::string::npos) 
+        {
+            auto backslash = modified_str.find("\\");
+            modified_str[backslash] = '/';
+        }
+        auto final_str = modified_str.c_str();
+
         if(!m_textures_loaded.count(str_c)) {
             std::shared_ptr<Texture2D> texture;
             switch(m_selectedAPI) 
@@ -119,7 +131,7 @@ std::vector<std::shared_ptr<Texture2D>> Model::LoadModelTextures(aiMaterial* mat
                     throw std::runtime_error("ERROR::VertexBuffer::Create() - Renderer::m_rendererAPI::API is currently set to VOID!");
                     break;
                 case API::OPEN_GL:
-                    texture = Texture2D::Create(str_c, type_name.c_str(), m_dir);
+                    texture = Texture2D::Create(final_str, type_name.c_str(), m_dir);
                     break;
                 case API::VULKAN:
                     throw std::runtime_error("Error::VertexBuffer::Create() - RendererAPI::Vulkan is currently unavailabe.");

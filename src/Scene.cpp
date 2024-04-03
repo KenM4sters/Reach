@@ -70,6 +70,16 @@ void Scene::OnAttach()
     textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_ao.png", "texture_ao"));
 
     m_models->push_back(textured_sphere_model);
+
+    // Cerberus Model
+    auto cerberus_shader = Shader::Create("texturedSphere_shader", "src/Shaders/PBR_textured.vert", "src/Shaders/PBR_textured.frag");
+    auto cerberus_model = std::make_shared<Model>(
+        "Assets/Models/Cerberus_by_Andrew_Maximov/Cerberus_LP.FBX", 
+        OBJECT_TYPE::MODEL, 
+        new Material(cerberus_shader)
+    );
+    cerberus_model->GetTransformProps()->Scale = glm::vec3(0.01f);
+    m_models->push_back(cerberus_model);
      
     // Light
     m_pointLight = new PointLight(OBJECT_TYPE::LIGHT, new PointLightProps());
@@ -86,6 +96,7 @@ void Scene::OnAttach()
     backpack_model->GetMaterial()->GetProps()->CubeTexture = m_skybox->m_convolutedCubeMap;
     sphere_model->GetMaterial()->GetProps()->CubeTexture = m_skybox->m_convolutedCubeMap;
     textured_sphere_model->GetMaterial()->GetProps()->CubeTexture = m_skybox->m_convolutedCubeMap;
+    cerberus_model->GetMaterial()->GetProps()->CubeTexture = m_skybox->m_convolutedCubeMap;
 
     // Cube map generation is all done now, so we can set our camera back to a more appropriate place.
     glm::vec3 new_camera_pos = glm::vec3(0.0f, 0.0f, 5.0f);

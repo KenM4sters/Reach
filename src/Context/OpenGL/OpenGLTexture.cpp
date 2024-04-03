@@ -22,6 +22,8 @@ OpenGLTexture2D::OpenGLTexture2D(const char* path, const char* name, std::string
     std::string filename = std::string(path);
     filename = dir + '/' + filename;
     std::string file_ext = std::string(path).substr(std::string(path).find_first_of("."), std::string(path).length());
+    
+    std::cout << filename << std::endl;
 
 
     int width, height, nrChannels;
@@ -31,6 +33,7 @@ OpenGLTexture2D::OpenGLTexture2D(const char* path, const char* name, std::string
 
     if(!data) {
         data = stbi_load(path, &width , &height, &nrChannels, 0);
+        std::cout << path << std::endl;
     } 
 
     if(data)

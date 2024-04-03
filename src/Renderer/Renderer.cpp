@@ -57,21 +57,26 @@ void Renderer::Draw(const std::shared_ptr<VertexArray> vao)
 
 void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>& models, std::shared_ptr<PerspectiveCamera>* camera, Light* light) 
 {
+
+    static uint32_t TEX_UNIT = 0; // Keeps track of the lowest texture unit that's not in use.
+
     for(const auto& model : *models) 
     {
         for(auto mesh : *model->GetMeshes()) 
         {
-            uint16_t diffuse_count = 1;
-            uint16_t specular_count = 1;
-            uint16_t normal_count = 1;
-            uint16_t height_count = 1;
-            uint16_t metallic_count = 1;
-            uint16_t roughness_count = 1;
-            uint16_t ao_count = 1;
+            uint16_t diffuse_count      = 1;
+            uint16_t specular_count     = 1;
+            uint16_t normal_count       = 1;
+            uint16_t height_count       = 1;
+            uint16_t metallic_count     = 1;
+            uint16_t roughness_count    = 1;
+            uint16_t ao_count           = 1;
+
             auto& textures = mesh.GetMaterial()->GetProps()->Textures;
             auto& model_textures = model->GetMaterial()->GetProps()->Textures;
             auto& cube_texture = model->GetMaterial()->GetProps()->CubeTexture;
             auto shader = mesh.GetMaterial()->GetShader();
+
             for(uint32_t i = 0; i < textures.size(); i++) {
                 std::string tex_index;
                 std::string name = textures[i]->GetName();
@@ -83,21 +88,25 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
                     tex_index = std::to_string(normal_count++);
                 }
                 shader->Use();
-                textures[i]->Bind(i);
-                shader->SetInt(name + tex_index, i);
-            };
+                textures[i]->Bind(TEX_UNIT);
+                shader->SetInt(name + tex_index, TEX_UNIT);
+                TEX_UNIT++;
+            }
+            
             for(uint32_t i = 0; i < model_textures.size(); i++) {
                 std::string name = model_textures[i]->GetName();
                 shader->Use();
-                model_textures[i]->Bind(i);
-                shader->SetInt(name, i);
+                model_textures[i]->Bind(TEX_UNIT);
+                shader->SetInt(name, TEX_UNIT);
+                TEX_UNIT++;
             }
             // Add the environemt map.
             // Don't forget to adjust the active texture unit to consider any previously set textures.
             // In our case it's just the model textures that are taking up the first few spots.
             auto tex_unit = (uint32_t)model_textures.size();
-            cube_texture->Bind(tex_unit);
-            shader->SetInt("env_map", tex_unit);
+            cube_texture->Bind(TEX_UNIT);
+            shader->SetInt("env_map", TEX_UNIT);
+            TEX_UNIT++;
 
             // Material Props (not really needed if the model has textures, but definitiely needed if it doesn't).
             auto mat_props = mesh.GetMaterial()->GetProps();
@@ -133,6 +142,7 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
             // Cleanup.
             cube_texture->Unbind();
             shader->Release();
+            TEX_UNIT = 0;
         }
     }
 }
