@@ -22,6 +22,22 @@ std::shared_ptr<Texture2D> Texture2D::Create(const char* path, const char* name,
     }
 }
 
+std::shared_ptr<Texture2D> Texture2D::Create(uint32_t width, uint32_t height, uint32_t nrChannels) 
+{
+    switch(Renderer::m_rendererAPI->GetAPI()) 
+    {
+        case API::VOID:
+            throw std::runtime_error("ERROR::VertexBuffer::Create() - Renderer::m_rendererAPI::API is currently set to VOID!");
+            break;
+        case API::OPEN_GL:
+            return std::make_shared<Texture2D>(OpenGLTexture2D(width, height, nrChannels));
+            break;
+        case API::VULKAN:
+            throw std::runtime_error("Error::VertexBuffer::Create() - RendererAPI::Vulkan is currently unavailabe.");
+            break;   
+    }
+}
+
 void Texture2D::Bind() 
 {
     glActiveTexture(GL_TEXTURE0);
@@ -68,7 +84,7 @@ std::shared_ptr<CubeTexture> CubeTexture::Create(const char* path, const char* n
     }
 }
 
-std::shared_ptr<CubeTexture> CubeTexture::Create(uint32_t width, uint32_t height)
+std::shared_ptr<CubeTexture> CubeTexture::Create(uint32_t width, uint32_t height, bool GenerateMipMaps)
 {
     switch(Renderer::m_rendererAPI->GetAPI()) 
     {
@@ -76,7 +92,7 @@ std::shared_ptr<CubeTexture> CubeTexture::Create(uint32_t width, uint32_t height
             throw std::runtime_error("ERROR::VertexBuffer::Create() - Renderer::m_rendererAPI::API is currently set to VOID!");
             break;
         case API::OPEN_GL:
-            return std::make_shared<CubeTexture>(OpenGLCubeTexture(width, height));
+            return std::make_shared<CubeTexture>(OpenGLCubeTexture(width, height, GenerateMipMaps));
             break;
         case API::VULKAN:
             throw std::runtime_error("Error::VertexBuffer::Create() - RendererAPI::Vulkan is currently unavailabe.");

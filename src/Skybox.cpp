@@ -11,7 +11,8 @@ Skybox::Skybox(std::shared_ptr<Texture2D> HDR, std::shared_ptr<Shader> skyboxSha
     m_mesh->GetMaterial()->GetProps()->Textures.push_back(HDR);
     m_mesh->GetMaterial()->GetProps()->CubeTexture = CubeTexture::Create(512, 512);
 
-    m_convolutedCubeMap = CubeTexture::Create(32, 32);
+    m_convolutedCubeMap = CubeTexture::Create(32, 32, false);
+    m_prefilteredCubeMap = CubeTexture::Create(128, 128, true);
 
     PrepareFramebuffer();
     PrepareTextures();
@@ -33,6 +34,10 @@ void Skybox::PrepareTextures()
 {
     auto convolutionShader = Shader::Create("convolutionShader", "src/Shaders/Convolution.vert", "src/Shaders/Convolution.frag");
     auto eqToCubeShader = Shader::Create("env_shader", "src/Shaders/EqToCube.vert", "src/Shaders/EqToCube.frag");
+    auto prefilterShader = Shader::Create("prefilter_shader", "src/Shaders/Prefilter.vert", "src/Shaders/Prefilter.frag");
+
+    auto lookUpTexture = Texture2D::Create(512, 512, 2); // Skeleton texture (no pre-loaded data).
+    
     auto cube_tex = m_mesh->GetMaterial()->GetProps()->CubeTexture;
     auto hdri_tex = m_mesh->GetMaterial()->GetProps()->Textures[0];
 
@@ -65,6 +70,9 @@ void Skybox::PrepareTextures()
 
         Renderer::Draw(m_mesh->GetVAO()); // Draws VAO without using any shaders or textures.
     }
+    cube_tex->Bind();        
+    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+
     // Clean up.
     glBindBuffer(GL_FRAMEBUFFER, 0);
     hdri_tex->Unbind();
@@ -96,8 +104,51 @@ void Skybox::PrepareTextures()
     cube_tex->Unbind();
     convolutionShader->Release();
 
+
+    // Prefilter Map
+
+    prefilterShader->Use();
+    prefilterShader->SetInt("environmentMap", 0);
+    prefilterShader->SetMat4f("projection", captureProjection);
+    m_FBO->Bind();
+    cube_tex->Bind();
+    unsigned int maxMipLevels = 5;
+    for (unsigned int mip = 0; mip < maxMipLevels; ++mip)
+    {
+        // reisze framebuffer according to mip-level size.
+        uint32_t mipWidth  = static_cast<uint32_t>(128 * std::pow(0.5, mip));
+        uint32_t mipHeight = static_cast<uint32_t>(128 * std::pow(0.5, mip));
+
+        auto config = FramebufferConfig({1, mipWidth, mipHeight});
+        m_FBO->SetConfig(config);
+        glViewport(0, 0, mipWidth, mipHeight);
+
+        float roughness = (float)mip / (float)(maxMipLevels - 1);
+        prefilterShader->SetFloat("roughness", roughness);
+        for (unsigned int i = 0; i < 6; ++i)
+        {
+            prefilterShader->SetMat4f("view", captureViews[i]);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_prefilteredCubeMap->GetID(), mip);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            
+            Renderer::Draw(m_mesh->GetVAO()); // Draws VAO without using any shaders or textures.
+        }
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // BRDF
+
+    // Look Up texture
+
+
+
+
+
+
+
     // Optional - Convoluted texture can look pretty cool if you don't want an obvious background.
-    // m_mesh->GetMaterial()->GetProps()->CubeTexture = convolutedTex;
+    m_mesh->GetMaterial()->GetProps()->CubeTexture = m_prefilteredCubeMap;
+    glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS); // Blends the colors around each side of the cube map.
 }
 
 void Skybox::ResetChanges() 

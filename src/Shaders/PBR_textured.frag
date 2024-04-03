@@ -24,6 +24,7 @@ uniform vec3 CameraPos;
 uniform Light light;
 uniform Material material;
 uniform sampler2D texture_diffuse;
+uniform sampler2D texture_normal;
 uniform sampler2D texture_height;
 uniform sampler2D texture_metallic;
 uniform sampler2D texture_roughness;
@@ -41,7 +42,8 @@ void main()
 {
     // Setting values as single float values of textures.
     vec3 Albedo      = pow(texture(texture_diffuse, vUv).rgb, vec3(2.2));
-    float Height     = texture(texture_height, vUv).r;
+    vec3 Normal      = texture(texture_normal, vUv).rgb;
+    vec3 Height      = texture(texture_height, vUv).rgb;
     float Metallic   = texture(texture_metallic, vUv).r;
     float Roughness  = texture(texture_roughness, vUv).r;
     float AO         = texture(texture_ao, vUv).r;
@@ -49,7 +51,7 @@ void main()
     // Setup
     //================================================================
     vec3 V = normalize(CameraPos - vFragPos);
-    vec3 N = normalize(vNormal);    
+    vec3 N = normalize(Normal);    
 
     vec3 L = normalize(light.Position - vFragPos);
     vec3 H = normalize(V + L);

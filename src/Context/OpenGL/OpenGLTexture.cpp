@@ -23,7 +23,6 @@ OpenGLTexture2D::OpenGLTexture2D(const char* path, const char* name, std::string
     filename = dir + '/' + filename;
     std::string file_ext = std::string(path).substr(std::string(path).find_first_of("."), std::string(path).length());
     
-    std::cout << filename << std::endl;
 
 
     int width, height, nrChannels;
@@ -33,13 +32,12 @@ OpenGLTexture2D::OpenGLTexture2D(const char* path, const char* name, std::string
 
     if(!data) {
         data = stbi_load(path, &width , &height, &nrChannels, 0);
-        std::cout << path << std::endl;
     } 
 
     if(data)
     {   
         GLenum format = GL_RGB;
-        if(file_ext == ".hdr") format = GL_RGB16F;
+        format = GL_RGB16F;
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, this->m_ID);
@@ -61,6 +59,36 @@ OpenGLTexture2D::OpenGLTexture2D(const char* path, const char* name, std::string
         stbi_image_free(data);
     }
 }
+
+
+OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height, uint32_t nrChannels) 
+{
+    glGenTextures(1, &m_ID);
+    glBindTexture(GL_TEXTURE_2D, m_ID);
+
+    GLenum format1;
+    GLenum format2;
+
+    switch(nrChannels) 
+    {
+        case 2:
+            format1 = GL_RG16F;
+            format2 = GL_RG;
+            break;
+        case 3: 
+            format1 = GL_RGB16F;
+            format2 = GL_RGB;
+            break;
+    }
+
+
+    glTexImage2D(GL_TEXTURE_2D, 0, format1, width, height, 0, format2, GL_FLOAT, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+}
+
 //================================================================
 //================================================================
 
@@ -111,7 +139,7 @@ OpenGLCubeTexture::OpenGLCubeTexture(const char* path, const char* name)
     }
 }
 
-OpenGLCubeTexture::OpenGLCubeTexture(uint32_t width, uint32_t height) 
+OpenGLCubeTexture::OpenGLCubeTexture(uint32_t width, uint32_t height, bool GenerateMipMaps) 
 {
     glGenTextures(1, &m_ID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_ID);
@@ -119,13 +147,24 @@ OpenGLCubeTexture::OpenGLCubeTexture(uint32_t width, uint32_t height)
     {
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
     }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+    if(!GenerateMipMaps) 
+    {
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    } else {
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+    }
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
 }
 
 //================================================================

@@ -86,6 +86,14 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
                     tex_index = std::to_string(specular_count++);
                 } else if(name == "texture_normal") {
                     tex_index = std::to_string(normal_count++);
+                } else if(name == "texture_height") {
+                    tex_index = std::to_string(height_count++);
+                } else if(name == "texture_metallic") {
+                    tex_index = std::to_string(metallic_count++);
+                } else if(name == "texture_roughness") {
+                    tex_index = std::to_string(roughness_count++);
+                } else if(name == "texture_ao") {
+                    tex_index = std::to_string(ao_count++);
                 }
                 shader->Use();
                 textures[i]->Bind(TEX_UNIT);
@@ -130,6 +138,7 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
             // Transform props
             auto model_transforms = model->GetTransformProps();
             model_transforms->ModelMatrix = glm::mat4(1.0f);
+            model_transforms->ModelMatrix *= model_transforms->RotationMatrix;
             model_transforms->ModelMatrix = glm::scale(model_transforms->ModelMatrix, model_transforms->Scale);
             model_transforms->ModelMatrix = glm::translate(model_transforms->ModelMatrix, model_transforms->Translation);
             mesh.SetTransformProps(model->GetTransformProps());

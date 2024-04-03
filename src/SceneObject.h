@@ -10,10 +10,10 @@ enum OBJECT_TYPE
 
 // Holds the transform properties of a Mesh.
 struct TransformProps {
-    glm::vec3 Translation   = glm::vec3(0.0f);
-    glm::quat Rotation      = glm::quat(glm::vec3(0.0f));
-    glm::vec3 Scale         = glm::vec3(1.0f);
-    glm::mat4 ModelMatrix   = glm::mat4(1.0f);
+    glm::vec3 Translation       = glm::vec3(0.0f);
+    glm::mat4 RotationMatrix    = glm::mat4(1.0f);
+    glm::vec3 Scale             = glm::vec3(1.0f);
+    glm::mat4 ModelMatrix       = glm::mat4(1.0f);
 };
 
 

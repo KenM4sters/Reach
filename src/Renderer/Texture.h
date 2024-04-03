@@ -26,6 +26,7 @@ class Texture2D : public Texture {
         void Unbind() override;
         void Unbind(uint32_t& count) override;
         static std::shared_ptr<Texture2D> Create(const char* path, const char* name, std::string dir = "");
+        static std::shared_ptr<Texture2D> Create(uint32_t width, uint32_t height, uint32_t nrChannels);
     protected:        
         uint32_t m_ID;
         uint32_t m_width;
@@ -46,7 +47,7 @@ class CubeTexture : public Texture {
         static std::shared_ptr<CubeTexture> Create(const char* path, const char* name);
         // Function to create a skeleton texture with no data - useful when filling the data
         // yourself with say a framebuffer object.
-        static std::shared_ptr<CubeTexture> Create(uint32_t width, uint32_t height);
+        static std::shared_ptr<CubeTexture> Create(uint32_t width, uint32_t height, bool GenerateMipMaps = false);
     protected:        
         uint32_t m_ID;
         uint32_t m_width;

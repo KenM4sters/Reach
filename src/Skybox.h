@@ -21,6 +21,7 @@ class Skybox {
     public:
         std::shared_ptr<CubeTexture> m_convolutedCubeMap = nullptr;
         std::shared_ptr<CubeTexture> m_rawCubeMap = nullptr;
+        std::shared_ptr<CubeTexture> m_prefilteredCubeMap = nullptr;
     private:
         std::shared_ptr<Shader> m_skyboxShader = nullptr;
         std::shared_ptr<Mesh> m_mesh = nullptr;
