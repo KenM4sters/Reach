@@ -39,7 +39,8 @@ float DistributionGGX(vec3 N, vec3 H, float roughness);
 float GeometrySchlickGGX(float NdotV, float roughness);
 float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness);
 vec3 FresnelSchlick(float cosTheta, vec3 F0);
-vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness); 
+vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness);
+vec3 getNormalFromMap(); 
 
 
 void main() 
@@ -55,7 +56,7 @@ void main()
     // Setup
     //================================================================
     vec3 V = normalize(CameraPos - vFragPos);
-    vec3 N = normalize(Normal); 
+    vec3 N = getNormalFromMap(); 
     vec3 R = reflect(-V, N);   
 
     vec3 L = normalize(light.Position - vFragPos);
@@ -109,6 +110,23 @@ void main()
 
     FragColor = vec4(color, 1.0);
 
+}
+
+vec3 getNormalFromMap()
+{
+    vec3 tangentNormal = texture(texture_normal1, vUv).xyz * 2.0 - 1.0;
+
+    vec3 Q1  = dFdx(vFragPos);
+    vec3 Q2  = dFdy(vFragPos);
+    vec2 st1 = dFdx(vUv);
+    vec2 st2 = dFdy(vUv);
+
+    vec3 N   = normalize(vNormal);
+    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
+    vec3 B  = -normalize(cross(N, T));
+    mat3 TBN = mat3(T, B, N);
+
+    return normalize(TBN * tangentNormal);
 }
 
 vec3 FresnelSchlick(float cosTheta, vec3 F0)

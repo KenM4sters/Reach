@@ -58,7 +58,6 @@ void Renderer::Draw(const std::shared_ptr<VertexArray> vao)
 
 void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>& models, std::shared_ptr<PerspectiveCamera>* camera, std::shared_ptr<Skybox> skybox, Light* light) 
 {
-
     for(const auto& model : *models) 
     {
         for(auto mesh : *model->GetMeshes()) 

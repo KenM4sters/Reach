@@ -62,12 +62,10 @@ void Scene::OnAttach()
     textured_sphere_model->GetTransformProps()->Scale = glm::vec3(0.05f);
     textured_sphere_model->GetTransformProps()->Translation = glm::vec3(0.0f, 0.0f, 0.0f);
 
-    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/used-stainless-steel2-bl/used-stainless-steel2_albedo.png", "texture_diffuse1"));
-    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/used-stainless-steel2-bl/used-stainless-steel2_height.png", "texture_height1"));
-    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/used-stainless-steel2-bl/used-stainless-steel2_normal-ogl.png", "texture_normal1"));
-    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/used-stainless-steel2-bl/used-stainless-steel2_metallic.png", "texture_metallic1"));
-    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/used-stainless-steel2-bl/used-stainless-steel2_roughness.png", "texture_roughness1"));
-    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/used-stainless-steel2-bl/used-stainless-steel2_ao.png", "texture_ao1"));
+    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/Marble/Albedo.png", "texture_diffuse1"));
+    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/Marble/Normal.png", "texture_normal1"));
+    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/Marble/Metallic.png", "texture_metallic1"));
+    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/Marble/Roughness.png", "texture_roughness1"));
 
     m_models->push_back(textured_sphere_model);
 
@@ -78,9 +76,9 @@ void Scene::OnAttach()
         OBJECT_TYPE::MODEL, 
         new Material(cerberus_shader)
     );
-    auto m_tex = Texture2D::Create("Assets/Models/Cerberus_by_Andrew_Maximov/Textures/Cerberus_M.tga", "texture_metallic");
-    auto r_tex = Texture2D::Create("Assets/Models/Cerberus_by_Andrew_Maximov/Textures/Cerberus_R.tga", "texture_roughness");
-    auto n_tex = Texture2D::Create("Assets/Models/Cerberus_by_Andrew_Maximov/Textures/Cerberus_N.tga", "texture_normal");
+    auto m_tex = Texture2D::Create("Assets/Models/Cerberus_by_Andrew_Maximov/Textures/Cerberus_M.tga", "texture_metallic1");
+    auto r_tex = Texture2D::Create("Assets/Models/Cerberus_by_Andrew_Maximov/Textures/Cerberus_R.tga", "texture_roughness1");
+    auto n_tex = Texture2D::Create("Assets/Models/Cerberus_by_Andrew_Maximov/Textures/Cerberus_N.tga", "texture_normal1");
 
     // Assimp doesn't seem to like PBR textures of FBX models(?), so we'll load them manually.
     for(auto& mesh : *cerberus_model->GetMeshes()) 
@@ -111,7 +109,7 @@ void Scene::OnAttach()
 
     // Background Environment
     m_skybox = std::make_shared<Skybox>(
-        Texture2D::Create("Assets/Textures/ocean.hdr", "ocean"),
+        Texture2D::Create("Assets/Textures/autumn_field_4k.hdr", "field"),
         Shader::Create("background_shader", "src/Shaders/Background.vert", "src/Shaders/Background.frag")
     );
 
