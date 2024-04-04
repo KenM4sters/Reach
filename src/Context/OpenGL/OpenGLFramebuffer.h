@@ -15,6 +15,7 @@ class OpenGLFramebuffer : public Framebuffer {
         // Getters
         const FramebufferConfig& GetConfig () const override { return m_config; }
         const uint32_t& GetColorAttachmentID() const override { return m_colorAttachment; }
+        const uint32_t& GetDepthStencilAttachmentID() const override {return m_depthStencilAttachment; };
         const uint32_t& GetID() const override { return m_ID; }
         const std::shared_ptr<VertexArray> GetVertexArray() const override { return m_vertexArray;}
         const std::shared_ptr<Shader> GetShader() const override { return m_shader;}

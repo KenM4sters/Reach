@@ -21,6 +21,7 @@ class Framebuffer {
 
         virtual const FramebufferConfig& GetConfig() const = 0;
         virtual const uint32_t& GetColorAttachmentID() const = 0;
+        virtual const uint32_t& GetDepthStencilAttachmentID() const = 0;
         virtual const uint32_t& GetID() const = 0;
         virtual const std::shared_ptr<VertexArray> GetVertexArray() const {return nullptr;}
         virtual const std::shared_ptr<Shader> GetShader() const {return nullptr;}

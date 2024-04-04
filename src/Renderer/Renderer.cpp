@@ -119,7 +119,7 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
             shader->SetInt("prefiltered_map", TEX_UNIT);
             TEX_UNIT++;
             // BRDF Texture.
-            convoluted_texture->Bind(TEX_UNIT);
+            BRDF_texture->Bind(TEX_UNIT);
             shader->SetInt("BRDF_map", TEX_UNIT);
             TEX_UNIT++;
 

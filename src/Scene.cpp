@@ -52,45 +52,45 @@ void Scene::OnAttach()
     sphere_model->GetTransformProps()->Translation = glm::vec3(45.0f, 0.0f, 0.0f);
     m_models->push_back(sphere_model);
 
-    // Textured Sphere Model
-    auto textured_sphere_shader = Shader::Create("texturedSphere_shader", "src/Shaders/PBR_textured.vert", "src/Shaders/PBR_textured.frag");
-    auto textured_sphere_model = std::make_shared<Model>(
-        "Assets/Models/Sphere/sphere.obj", 
-        OBJECT_TYPE::MODEL, 
-        new Material(textured_sphere_shader)
-    );
-    textured_sphere_model->GetTransformProps()->Scale = glm::vec3(0.05f);
-    textured_sphere_model->GetTransformProps()->Translation = glm::vec3(0.0f, 0.0f, 0.0f);
+    // // Textured Sphere Model
+    // auto textured_sphere_shader = Shader::Create("texturedSphere_shader", "src/Shaders/PBR_textured.vert", "src/Shaders/PBR_textured.frag");
+    // auto textured_sphere_model = std::make_shared<Model>(
+    //     "Assets/Models/Sphere/sphere.obj", 
+    //     OBJECT_TYPE::MODEL, 
+    //     new Material(textured_sphere_shader)
+    // );
+    // textured_sphere_model->GetTransformProps()->Scale = glm::vec3(0.05f);
+    // textured_sphere_model->GetTransformProps()->Translation = glm::vec3(0.0f, 0.0f, 0.0f);
 
-    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_albedo.png", "texture_diffuse"));
-    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_height.png", "texture_height"));
-    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_normal-ogl.png", "texture_normal"));
-    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_metallic.png", "texture_metallic"));
-    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_roughness.png", "texture_roughness"));
-    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_ao.png", "texture_ao"));
+    // textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_albedo.png", "texture_diffuse"));
+    // textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_height.png", "texture_height"));
+    // textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_normal-ogl.png", "texture_normal"));
+    // textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_metallic.png", "texture_metallic"));
+    // textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_roughness.png", "texture_roughness"));
+    // textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_ao.png", "texture_ao"));
 
-    m_models->push_back(textured_sphere_model);
+    // m_models->push_back(textured_sphere_model);
 
     // Cerberus Model
-    auto cerberus_shader = Shader::Create("cerberus_shader", "src/Shaders/PBR_textured.vert", "src/Shaders/PBR_textured.frag");
-    auto cerberus_model = std::make_shared<Model>(
-        "Assets/Models/Cerberus_by_Andrew_Maximov/Cerberus_LP.FBX", 
-        OBJECT_TYPE::MODEL, 
-        new Material(cerberus_shader)
-    );
-    cerberus_model->GetTransformProps()->Scale = glm::vec3(0.01f);
-    cerberus_model->GetTransformProps()->RotationMatrix = glm::rotate(
-        cerberus_model->GetTransformProps()->RotationMatrix,
-        glm::radians(90.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f)
-    );
-    cerberus_model->GetTransformProps()->RotationMatrix = glm::rotate(
-        cerberus_model->GetTransformProps()->RotationMatrix,
-        glm::radians(-90.0f),
-        glm::vec3(1.0f, 0.0f, 0.0f)
-    );
-    cerberus_model->GetTransformProps()->Translation = glm::vec3(0.0f,-50.0f, 0.0f);
-    m_models->push_back(cerberus_model);
+    // auto cerberus_shader = Shader::Create("cerberus_shader", "src/Shaders/PBR_textured.vert", "src/Shaders/PBR_textured.frag");
+    // auto cerberus_model = std::make_shared<Model>(
+    //     "Assets/Models/Cerberus_by_Andrew_Maximov/Cerberus_LP.FBX", 
+    //     OBJECT_TYPE::MODEL, 
+    //     new Material(cerberus_shader)
+    // );
+    // cerberus_model->GetTransformProps()->Scale = glm::vec3(0.01f);
+    // cerberus_model->GetTransformProps()->RotationMatrix = glm::rotate(
+    //     cerberus_model->GetTransformProps()->RotationMatrix,
+    //     glm::radians(90.0f),
+    //     glm::vec3(0.0f, 1.0f, 0.0f)
+    // );
+    // cerberus_model->GetTransformProps()->RotationMatrix = glm::rotate(
+    //     cerberus_model->GetTransformProps()->RotationMatrix,
+    //     glm::radians(-90.0f),
+    //     glm::vec3(1.0f, 0.0f, 0.0f)
+    // );
+    // cerberus_model->GetTransformProps()->Translation = glm::vec3(0.0f,-50.0f, 0.0f);
+    // m_models->push_back(cerberus_model);
      
     // Light
     m_pointLight = new PointLight(OBJECT_TYPE::LIGHT, new PointLightProps());

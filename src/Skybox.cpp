@@ -1,5 +1,6 @@
 #include "Skybox.h"
 #include "Renderer/Renderer.h"
+#include "App.h"
 
 Skybox::Skybox(std::shared_ptr<Texture2D> HDR, std::shared_ptr<Shader> skyboxShader)
     : m_skyboxShader(skyboxShader)
@@ -9,11 +10,11 @@ Skybox::Skybox(std::shared_ptr<Texture2D> HDR, std::shared_ptr<Shader> skyboxSha
     m_mesh = std::make_shared<Mesh>(background_vao, new Material(skyboxShader));
 
     m_mesh->GetMaterial()->GetProps()->Textures.push_back(HDR);
-    m_mesh->GetMaterial()->GetProps()->CubeTexture = CubeTexture::Create(512, 512, true);
+    m_mesh->GetMaterial()->GetProps()->CubeTexture = CubeTexture::Create(512*2, 512*2, true);
 
-    m_convolutedCubeMap = CubeTexture::Create(32, 32, false);
-    m_prefilteredCubeMap = CubeTexture::Create(128, 128, true);
-    m_BRDFTexture = Texture2D::Create(512, 512, 2);
+    m_convolutedCubeMap = CubeTexture::Create(32*2, 32*2, false);
+    m_prefilteredCubeMap = CubeTexture::Create(128*2, 128*2, true);
+    m_BRDFTexture = Texture2D::Create(512*2, 512*2, 2);
 
     PrepareFramebuffer();
     PrepareTextures();
@@ -62,7 +63,7 @@ void Skybox::PrepareTextures()
     cube_tex->Bind();
 
     m_FBO->Bind();
-    glViewport(0, 0, 512, 512);
+    glViewport(0, 0, 512*2, 512*2);
     for (unsigned int i = 0; i < 6; ++i)
     {
         eqToCubeShader->SetMat4f("view", captureViews[i]);
@@ -91,7 +92,7 @@ void Skybox::PrepareTextures()
     convolutionShader->SetMat4f("projection", captureProjection);
     m_FBO->Bind();
     cube_tex->Bind();
-    glViewport(0, 0, 32, 32); // don't forget to configure the viewport to the capture dimensions.
+    glViewport(0, 0, 32*2, 32*2); // don't forget to configure the viewport to the capture dimensions.
     for (unsigned int i = 0; i < 6; ++i)
     {
         convolutionShader->SetMat4f("view", captureViews[i]);
@@ -129,7 +130,7 @@ void Skybox::PrepareTextures()
 
         auto config = FramebufferConfig({1, mipWidth, mipHeight});
         m_FBO->SetConfig(config);
-        glViewport(0, 0, mipWidth, mipHeight);
+        glViewport(0, 0, mipWidth*2, mipHeight*2);
 
         float roughness = (float)mip / (float)(maxMipLevels - 1);
         prefilterShader->SetFloat("roughness", roughness);
@@ -152,21 +153,35 @@ void Skybox::PrepareTextures()
 
     // Look Up texture
     auto quad_vertices = MakeVertexFromFloat(square_vertices);
-    auto vao = VertexArray::Create(VertexBuffer::Create(quad_vertices, quad_vertices.size()*sizeof(Vertex)));
-
+    auto vao = VertexArray::Create(
+        VertexBuffer::Create(quad_vertices, quad_vertices.size()*sizeof(Vertex)),
+        IndexBuffer::Create(square_indices, sizeof(square_indices)*sizeof(float))
+    );
     auto brdf_config = FramebufferConfig({1, 512, 512});
     m_FBO->SetConfig(brdf_config);
+
+    // App& app = App::GetInstance();
+
     m_FBO->Bind();
     BRDF_shader->Use();
-    m_BRDFTexture->Bind();
-    glViewport(0, 0, 512, 512);
+    glViewport(0, 0, 512*2, 512*2);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_BRDFTexture->GetID(), 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     Renderer::Draw(vao);
 
+    // Cleanup.
     m_FBO->Unbind();
     BRDF_shader->Release();
     m_BRDFTexture->Unbind();
+
+    // while(app.GetWindow()->IsRunning()) 
+    // {
+    //     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //     Renderer::Draw(vao);
+    //     Renderer::m_rendererAPI->ListenToEvents();
+    //     Renderer::m_rendererAPI->SwapBuffers(app.GetWindow()->GetNativeWindow());
+    // }
+
 
     // Optional - Convoluted texture can look pretty cool if you don't want an obvious background.
     // m_mesh->GetMaterial()->GetProps()->CubeTexture = m_prefilteredCubeMap;
