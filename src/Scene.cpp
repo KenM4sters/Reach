@@ -31,15 +31,15 @@ void Scene::OnAttach()
     m_models = std::make_shared<std::vector<std::shared_ptr<Model>>>();
 
     // Backpack Model
-    auto backpack_shader = Shader::Create("Backpack_shader", "src/Shaders/PHONG_textured.vert", "src/Shaders/PHONG_textured.frag");
-    auto backpack_model = std::make_shared<Model>(
-        "Assets/Models/backpack/backpack.obj",
-        OBJECT_TYPE::MODEL, 
-        new Material(backpack_shader)
-    );
-    backpack_model->GetTransformProps()->Scale = glm::vec3(0.25f);
-    backpack_model->GetTransformProps()->Translation = glm::vec3(-5.0f, 0.0f, 0.0f);
-    m_models->push_back(backpack_model);
+    // auto backpack_shader = Shader::Create("Backpack_shader", "src/Shaders/PHONG_textured.vert", "src/Shaders/PHONG_textured.frag");
+    // auto backpack_model = std::make_shared<Model>(
+    //     "Assets/Models/backpack/backpack.obj",
+    //     OBJECT_TYPE::MODEL, 
+    //     new Material(backpack_shader)
+    // );
+    // backpack_model->GetTransformProps()->Scale = glm::vec3(0.25f);
+    // backpack_model->GetTransformProps()->Translation = glm::vec3(-5.0f, 0.0f, 0.0f);
+    // m_models->push_back(backpack_model);
     
     // Bare Sphere Model
     auto sphere_shader = Shader::Create("Sphere_shader", "src/Shaders/PBR_bare.vert", "src/Shaders/PBR_bare.frag");
@@ -62,12 +62,12 @@ void Scene::OnAttach()
     textured_sphere_model->GetTransformProps()->Scale = glm::vec3(0.05f);
     textured_sphere_model->GetTransformProps()->Translation = glm::vec3(0.0f, 0.0f, 0.0f);
 
-    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_albedo.png", "texture_diffuse"));
-    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_height.png", "texture_height"));
-    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_normal-ogl.png", "texture_normal"));
-    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_metallic.png", "texture_metallic"));
-    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_roughness.png", "texture_roughness"));
-    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/white-marble-bl/white-marble_ao.png", "texture_ao"));
+    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/used-stainless-steel2-bl/used-stainless-steel2_albedo.png", "texture_diffuse1"));
+    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/used-stainless-steel2-bl/used-stainless-steel2_height.png", "texture_height1"));
+    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/used-stainless-steel2-bl/used-stainless-steel2_normal-ogl.png", "texture_normal1"));
+    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/used-stainless-steel2-bl/used-stainless-steel2_metallic.png", "texture_metallic1"));
+    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/used-stainless-steel2-bl/used-stainless-steel2_roughness.png", "texture_roughness1"));
+    textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/used-stainless-steel2-bl/used-stainless-steel2_ao.png", "texture_ao1"));
 
     m_models->push_back(textured_sphere_model);
 
@@ -78,6 +78,18 @@ void Scene::OnAttach()
         OBJECT_TYPE::MODEL, 
         new Material(cerberus_shader)
     );
+    auto m_tex = Texture2D::Create("Assets/Models/Cerberus_by_Andrew_Maximov/Textures/Cerberus_M.tga", "texture_metallic");
+    auto r_tex = Texture2D::Create("Assets/Models/Cerberus_by_Andrew_Maximov/Textures/Cerberus_R.tga", "texture_roughness");
+    auto n_tex = Texture2D::Create("Assets/Models/Cerberus_by_Andrew_Maximov/Textures/Cerberus_N.tga", "texture_normal");
+
+    // Assimp doesn't seem to like PBR textures of FBX models(?), so we'll load them manually.
+    for(auto& mesh : *cerberus_model->GetMeshes()) 
+    {
+        mesh.GetMaterial()->GetProps()->Textures.push_back(m_tex);
+        mesh.GetMaterial()->GetProps()->Textures.push_back(r_tex);
+        mesh.GetMaterial()->GetProps()->Textures.push_back(n_tex);
+    }
+
     cerberus_model->GetTransformProps()->Scale = glm::vec3(0.01f);
     cerberus_model->GetTransformProps()->RotationMatrix = glm::rotate(
         cerberus_model->GetTransformProps()->RotationMatrix,

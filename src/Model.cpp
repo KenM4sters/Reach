@@ -10,7 +10,7 @@ void Model::LoadModel(const std::string &path) {
     m_selectedAPI = RendererAPI::GetAPI();
 
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace);
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
     {
         std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
@@ -69,6 +69,7 @@ Mesh Model::ProcessModelMesh(aiMesh *mesh, const aiScene *scene) {
     }
     std::vector<std::shared_ptr<Texture2D>> textures;
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+
     // Diffuse maps
     std::vector<std::shared_ptr<Texture2D>> diffuseMaps = LoadModelTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
@@ -91,7 +92,6 @@ Mesh Model::ProcessModelMesh(aiMesh *mesh, const aiScene *scene) {
     std::vector<std::shared_ptr<Texture2D>> AOMaps = LoadModelTextures(material, aiTextureType_AMBIENT_OCCLUSION, "texture_ao");
     textures.insert(textures.end(), AOMaps.begin(), AOMaps.end());
 
-    
     // Next step it to finally create our mesh from our vertices, indices, and materials.
     Material* mat = LoadMaterial(material, m_material->GetShader());
     auto& mat_textures = mat->GetProps()->Textures;
@@ -110,7 +110,6 @@ std::vector<std::shared_ptr<Texture2D>> Model::LoadModelTextures(aiMaterial* mat
     for(unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
         aiString str;
         mat->GetTexture(type, i, &str);
-
         auto str_c = str.C_Str();
 
         // Some textures use "\" for file paths which don't work on unix platforms,

@@ -23,12 +23,12 @@ uniform vec3 CameraPos;
 
 uniform Light light;
 uniform Material material;
-uniform sampler2D texture_diffuse;
-uniform sampler2D texture_normal;
-uniform sampler2D texture_height;
-uniform sampler2D texture_metallic;
-uniform sampler2D texture_roughness;
-uniform sampler2D texture_ao;
+uniform sampler2D texture_diffuse1;
+uniform sampler2D texture_normal1;
+uniform sampler2D texture_height1;
+uniform sampler2D texture_metallic1;
+uniform sampler2D texture_roughness1;
+uniform sampler2D texture_ao1;
 
 uniform samplerCube convoluted_map;
 uniform samplerCube prefiltered_map;
@@ -45,12 +45,12 @@ vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness);
 void main() 
 {
     // Setting values as single float values of textures.
-    vec3 Albedo      = pow(texture(texture_diffuse, vUv).rgb, vec3(2.2));
-    vec3 Normal      = texture(texture_normal, vUv).rgb;
-    vec3 Height      = texture(texture_height, vUv).rgb;
-    float Metallic   = texture(texture_metallic, vUv).r;
-    float Roughness  = texture(texture_roughness, vUv).r;
-    float AO         = texture(texture_ao, vUv).r;
+    vec3 Albedo      = pow(texture(texture_diffuse1, vUv).rgb, vec3(2.2));
+    vec3 Normal      = texture(texture_normal1, vUv).rgb;
+    vec3 Height      = texture(texture_height1, vUv).rgb;
+    float Metallic   = texture(texture_metallic1, vUv).r;
+    float Roughness  = texture(texture_roughness1, vUv).r;
+    float AO         = texture(texture_ao1, vUv).r;
 
     // Setup
     //================================================================

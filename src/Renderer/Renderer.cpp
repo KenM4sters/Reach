@@ -81,6 +81,8 @@ void Renderer::PrepareScene(std::shared_ptr<std::vector<std::shared_ptr<Model>>>
             for(uint32_t i = 0; i < textures.size(); i++) {
                 std::string tex_index;
                 std::string name = textures[i]->GetName();
+                // std::cout << i << std::endl;
+                // std::cout << name << std::endl;
                 if(name == "texture_diffuse") {
                     tex_index = std::to_string(diffuse_count++);
                 } else if(name == "texture_specular") {

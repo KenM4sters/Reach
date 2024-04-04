@@ -22,13 +22,13 @@ OpenGLTexture2D::OpenGLTexture2D(const char* path, const char* name, std::string
     std::string filename = std::string(path);
     filename = dir + '/' + filename;
     std::string file_ext = std::string(path).substr(std::string(path).find_first_of("."), std::string(path).length());
-    
 
 
     int width, height, nrChannels;
     unsigned char *data = stbi_load(filename.c_str(), &width , &height, &nrChannels, 0);
     m_height = height;
     m_width = width;
+
 
     if(!data) {
         data = stbi_load(path, &width , &height, &nrChannels, 0);
@@ -38,7 +38,6 @@ OpenGLTexture2D::OpenGLTexture2D(const char* path, const char* name, std::string
     {   
         GLenum format = GL_RGB;
         format = GL_RGB16F;
-
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, this->m_ID);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
