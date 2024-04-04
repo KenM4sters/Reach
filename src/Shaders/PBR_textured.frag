@@ -38,7 +38,9 @@ const float PI = 3.14159265359;
 float DistributionGGX(vec3 N, vec3 H, float roughness);
 float GeometrySchlickGGX(float NdotV, float roughness);
 float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness);
-vec3 fresnelSchlick(float cosTheta, vec3 F0);
+vec3 FresnelSchlick(float cosTheta, vec3 F0);
+vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness); 
+
 
 void main() 
 {
@@ -53,7 +55,8 @@ void main()
     // Setup
     //================================================================
     vec3 V = normalize(CameraPos - vFragPos);
-    vec3 N = normalize(Normal);    
+    vec3 N = normalize(Normal); 
+    vec3 R = reflect(-V, N);   
 
     vec3 L = normalize(light.Position - vFragPos);
     vec3 H = normalize(V + L);
@@ -67,7 +70,7 @@ void main()
     // //================================================================
     vec3 F0 = vec3(0.04);
     F0 = mix(F0, Albedo, Metallic);
-    vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
+    vec3 F = FresnelSchlick(max(dot(H, V), 0.0), F0);
 
     float NDF = DistributionGGX(N, H, Roughness);
     float G = GeometrySmith(N, H, L, Roughness);
@@ -83,9 +86,21 @@ void main()
     float NdotL = max(dot(N, L), 0.0);        
     vec3 Lo = (Kd * Albedo / PI + specular) * radiance * NdotL;
 
+    vec3 FR = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, material.Roughness);
+
+    vec3 kS = FR;
+    vec3 kD = 1.0 - kS;
+    kD *= 1.0 - Metallic;	  
+    
     vec3 irradiance = texture(convoluted_map, N).rgb;
-    vec3 diffuse = irradiance * Albedo;
-    vec3 ambient = Kd * diffuse * AO;
+    vec3 diffuse    = irradiance * Albedo;
+    
+    const float MAX_REFLECTION_LOD = 4.0;
+    vec3 prefilteredColor = textureLod(prefiltered_map, R,  Roughness * MAX_REFLECTION_LOD).rgb;   
+    vec2 envBRDF  = texture(BRDF_map, vec2(max(dot(N, V), 0.0), Roughness)).rg;
+    vec3 final_specular = prefilteredColor * (FR * envBRDF.x + envBRDF.y);
+    
+    vec3 ambient = (kD * diffuse + final_specular) * AO; 
     vec3 color = ambient + Lo;
 
     // HDRI
@@ -96,10 +111,16 @@ void main()
 
 }
 
-vec3 fresnelSchlick(float cosTheta, vec3 F0)
+vec3 FresnelSchlick(float cosTheta, vec3 F0)
 {
     return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }  
+
+vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
+{
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}  
+
 
 float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
