@@ -26,21 +26,7 @@ void App::Run()
 
         m_window->PreRender(); 
         Renderer::Submit(m_FBO); // Render the quad.
-
-        // glBindTexture(GL_TEXTURE_2D, m_FBO->GetColorAttachmentID());
-        // std::vector<uint32_t> pixels(512*2*512*2 * 3);
-        // glReadPixels(0, 0, 512*2, 512*2, GL_RGB, GL_FLOAT, pixels.data());
-
-        // auto count = 0;
-        // for(const auto& p : pixels) 
-        // {
-        //     std::cout << p << std::endl;
-        //     count++;
-        //     if(count == 20) 
-        //         break;
-        // }
-        // break;
-
+        
         m_window->PostRender();
         ReachCore::Time::Update(); // Useful for getting the time between frames.
     }

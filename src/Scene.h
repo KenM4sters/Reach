@@ -19,6 +19,7 @@ class Scene : public Layer {
         void Update() override;
         void UpdateInterface() override;
         void HandleUserInput();
+        std::shared_ptr<PerspectiveCamera> GetCamera() { return m_camera; }
     private:
         std::shared_ptr<std::vector<std::shared_ptr<Model>>> m_models; // I really should typdef std::shared_ptr.
         std::shared_ptr<PerspectiveCamera> m_camera = nullptr;

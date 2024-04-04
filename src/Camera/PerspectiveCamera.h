@@ -32,6 +32,7 @@ struct CameraProps {
     float MovementSpeed = 1.0f;
     float RotationSpeed = 1.0f;
     float Zoom = 45.0f;
+    float Exposure = 1.0f;
     uint32_t window_width, window_height;
     glm::vec3 Right     = {1.0f, 0.0f, 0.0f};
     glm::vec3 Up        = {0.0f, 1.0f, 0.0f};
@@ -44,7 +45,8 @@ class PerspectiveCamera {
         // Getters
         const glm::mat4& GetProjectionMatrix() const {return m_projectionMatrix;}
         const glm::mat4& GetViewMatrix() const {return m_viewMatrix;}
-        const float& GetZoom() const {return m_props.Zoom;}
+        float* GetZoom() {return &m_props.Zoom;}
+        float* GetExposure() {return &m_props.Exposure;}
         inline glm::vec3& GetPosition() {return m_position;}
         inline glm::quat& GetRotation() {return m_quaternion;}
         // Setters

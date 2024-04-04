@@ -48,8 +48,14 @@ void Scene::OnAttach()
         OBJECT_TYPE::MODEL, 
         new Material(sphere_shader)
     );
+    // Mat
+    sphere_model->GetMaterial()->GetProps()->Albedo = glm::vec3(1.0f, 1.0f, 1.0f);
+    sphere_model->GetMaterial()->GetProps()->Metallic = 1.0f;
+    sphere_model->GetMaterial()->GetProps()->Roughness = 0.1f;
+    sphere_model->GetMaterial()->GetProps()->AO = 1.0f;
+    // Transforms
     sphere_model->GetTransformProps()->Scale = glm::vec3(0.05f);
-    sphere_model->GetTransformProps()->Translation = glm::vec3(45.0f, 0.0f, 0.0f);
+    sphere_model->GetTransformProps()->Translation = glm::vec3(55.0f, 0.0f, 0.0f);
     m_models->push_back(sphere_model);
 
     // Textured Sphere Model
@@ -60,7 +66,7 @@ void Scene::OnAttach()
         new Material(textured_sphere_shader)
     );
     textured_sphere_model->GetTransformProps()->Scale = glm::vec3(0.05f);
-    textured_sphere_model->GetTransformProps()->Translation = glm::vec3(0.0f, 0.0f, 0.0f);
+    textured_sphere_model->GetTransformProps()->Translation = glm::vec3(-10.0f, 0.0f, 0.0f);
 
     textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/Marble/Albedo.png", "texture_diffuse1"));
     textured_sphere_model->GetMaterial()->GetProps()->Textures.push_back(Texture2D::Create("Assets/Textures/Marble/Normal.png", "texture_normal1"));
@@ -104,8 +110,8 @@ void Scene::OnAttach()
      
     // Light
     m_pointLight = new PointLight(OBJECT_TYPE::LIGHT, new PointLightProps());
-    m_pointLight->GetTransformProps()->Translation = glm::vec3(-5.0f, 3.0f, 2.0f);
-    m_pointLight->GetLightProps()->Intensity = 4.0f;
+    m_pointLight->GetTransformProps()->Translation = glm::vec3(0.0f, 1.0f, 2.0f);
+    m_pointLight->GetLightProps()->Intensity = 10.0f;
 
     // Background Environment
     m_skybox = std::make_shared<Skybox>(
@@ -158,6 +164,10 @@ void Scene::UpdateInterface()
         ImGui::DragFloat(roughness.c_str(), (float*)(&model->GetMaterial()->GetProps()->Roughness), 0.01f, 0.0f, 1.0f);
         ImGui::DragFloat(AO.c_str(), (float*)(&model->GetMaterial()->GetProps()->AO), 0.01f, 0.0f, 1.0f);
     }
+    // ImGui::End();
+    // ImGui::Begin("Camera Setttings");
+    // ImGui::DragFloat("Exposure", m_camera->GetExposure(), 0.0f, 10.0f, 0.1f);
+    // ImGui::DragFloat("Zoom", m_camera->GetZoom(), 0.0f, 90.0f, 1.0f);
 
 }
 
