@@ -10,6 +10,11 @@ While using OpenGL to start with, the project structure should also facilitate t
 - Be consistent with smart pointers vs raw pointers.
 - Use the `const` keyword whenever it's appropriate to (including in/after functions) - think like a Rust programmer (immutability first).
 
+## Concluding Thoughts
+- ImGUI docking system is incredibly nice, but I'd like to explore creatinting a cusotm GUI with QT (or maybe C# .NET).
+- PBR pipeline integrates very well into my current project structure, but I'd like to seperate render passes into different catagories (postprocessing, materials, etc...)
+
+
 
 
 
